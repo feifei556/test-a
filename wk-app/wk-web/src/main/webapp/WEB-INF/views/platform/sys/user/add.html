@@ -1,0 +1,132 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<header class="header navbar bg-white shadow">
+    <div class="btn-group tool-button">
+        <a class="btn btn-primary navbar-btn" href="${base}/platform/sys/user" id="goBack" data-pjax><i class="ti-angle-left"></i>${msg['globals.button.back']}</a>
+    </div>
+</header>
+
+<div class="content-wrap">
+    <div class="wrapper" style="min-height:500px;">
+        <section class="panel panel-form">
+            <form id="addForm" role="form" class="form-horizontal parsley-form" data-parsley-validate
+                  action="${base}/platform/sys/user/addDo" method="post">
+                <div class="row mb10">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label for="loginname" class="col-sm-2 control-label">用户名</label>
+                            <div class="col-sm-8">
+                            <input type="text" id="loginname" class="form-control" name="loginname" data-parsley-required="true" placeholder="用户名">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="col-sm-2 control-label">密码</label>
+                            <div class="col-sm-8">
+                            <input type="text" id="password" class="form-control" name="password" data-parsley-required="true" placeholder="密码">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="salt" class="col-sm-2 control-label">密码盐</label>
+                            <div class="col-sm-8">
+                            <input type="text" id="salt" class="form-control" name="salt" data-parsley-required="true" placeholder="密码盐">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="username" class="col-sm-2 control-label">用户名</label>
+                            <div class="col-sm-8">
+                            <input type="text" id="username" class="form-control" name="username" data-parsley-required="true" placeholder="用户名">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="isOnline" class="col-sm-2 control-label">是否在线</label>
+                            <div class="col-sm-8">
+                            <input type="text" id="isOnline" class="form-control" name="isOnline" data-parsley-required="true" placeholder="是否在线">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="disabled" class="col-sm-2 control-label">是否禁用</label>
+                            <div class="col-sm-8">
+                            <input type="text" id="disabled" class="form-control" name="disabled" data-parsley-required="true" placeholder="是否禁用">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginAt" class="col-sm-2 control-label">登陆时间</label>
+                            <div class="col-sm-8">
+                            <input type="text" id="loginAt" class="form-control" name="loginAt" data-parsley-required="true" placeholder="登陆时间">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginIp" class="col-sm-2 control-label">登陆IP</label>
+                            <div class="col-sm-8">
+                            <input type="text" id="loginIp" class="form-control" name="loginIp" data-parsley-required="true" placeholder="登陆IP">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginCount" class="col-sm-2 control-label">登陆次数</label>
+                            <div class="col-sm-8">
+                            <input type="text" id="loginCount" class="form-control" name="loginCount" data-parsley-required="true" placeholder="登陆次数">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="customMenu" class="col-sm-2 control-label">常用菜单</label>
+                            <div class="col-sm-8">
+                            <input type="text" id="customMenu" class="form-control" name="customMenu" data-parsley-required="true" placeholder="常用菜单">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginTheme" class="col-sm-2 control-label">皮肤样式</label>
+                            <div class="col-sm-8">
+                            <input type="text" id="loginTheme" class="form-control" name="loginTheme" data-parsley-required="true" placeholder="皮肤样式">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="money" class="col-sm-2 control-label">账户余额</label>
+                            <div class="col-sm-8">
+                            <input type="text" id="money" class="form-control" name="money" data-parsley-required="true" placeholder="账户余额">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="payPassword" class="col-sm-2 control-label">支付密码</label>
+                            <div class="col-sm-8">
+                            <input type="text" id="payPassword" class="form-control" name="payPassword" data-parsley-required="true" placeholder="支付密码">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3"></div>
+                <div class="col-lg-6">
+                    <div class="form-group text-center">
+                        <label></label>
+
+                        <div>
+                            <button class="btn btn-primary btn-block btn-lg btn-parsley" data-loading-text="正在提交...">提 交</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+<script language="JavaScript">
+    $(document).ready(function () {
+        $('#addForm').ajaxForm({
+            dataType: 'json',
+            beforeSubmit: function (arr, form, options) {
+                form.find("button:submit").button("loading");
+            },
+            success: function (data, statusText, xhr, form) {
+                if (data.code == 0) {
+                    Toast.success(data.msg);
+                    form.resetForm();
+                } else {
+                    Toast.error(data.msg);
+                }
+                form.find("button:submit").button("reset");
+            }
+        });
+    });
+</script>
+<%}%>
+
+
