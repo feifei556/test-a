@@ -12,16 +12,19 @@ layout("/layouts/platform.html"){
             <table class="table table-bordered table-striped mg-t datatable">
                 <thead>
                     <tr>
-                            <th>订单状态</th>
-                            <th>支付状态</th>
-                            <th>订单金额</th>
-                            <th>操作</th>
+                            <th>订单</th>
+                            <!--<th>商品编号</th>-->
+                            <th>商品名称</th>
+                            <th>购买数量</th>
+                            <th>购买价</th>
+
                     </tr>
                 </thead>
             </table>
         </div>
     </div>
 </section>
+<input type="hidden" id="orderId" value="${orderId!}">
 <div id="dialogDelete" class="modal fade bs-modal-sm" tabindex="-2" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -50,15 +53,6 @@ layout("/layouts/platform.html"){
         </div>
     </div>
 </div>
-<div id="dialogInfo" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        </div>
-    </div>
-</div>
-
-
-
 <script language="JavaScript">
     var datatable;
     function initDatatable() {
@@ -79,7 +73,7 @@ layout("/layouts/platform.html"){
                 sublime.closeLoadingbar($(".main-content"));
             },
             "ajax": {
-                "url": "${base}/platform/shop/order/data",
+                "url": "${base}/platform/shop/order/goods/datas/"+$("#orderId").val(),
                 "type": "post",
                 "data": function (d) {
 
@@ -87,25 +81,24 @@ layout("/layouts/platform.html"){
             },
             "order": [[0, "desc"]],
             "columns": [
-                    {"data": "orderState", "bSortable": true},
-                    {"data": "payState", "bSortable": true},
-                    {"data": "payMoney", "bSortable": true},
+                    {"data": "orderId", "bSortable": true},
+                    {"data": "goodName", "bSortable": true},
+                    {"data": "goodNum", "bSortable": true},
+                    {"data": "retailPrice", "bSortable": true}
             ],
             "columnDefs": [
-                {
-                    "render": function (data, type, row) {
-                        return '<div class="btn-group"><button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">' +
-                                ' <i class="ti-settings"></i> <span class="ti-angle-down"></span></button><ul class="dropdown-menu" role="menu">' +
-                               '<li><a href="${base}/platform/shop/order/detail/' + row.id + '" data-toggle="modal" data-target="#dialogDetail">查看</a></li>' +
-//                                '<li><a href="${base}/platform/shop/order/edit/' + row.id + '" data-pjax>修改</a></li>' +
-                            '<li><a href="${base}/platform/shop/order/goods/info/' + row.id + '" >订单详情</a></li>' +
-                            '<li><a href="${base}/platform/shop/order/payment/pay/' + row.id + '" data-pjax>支付</a></li>' +
-                                '<li class="divider"></li>' +
-                                '<li><a href="javascript:;" onclick="del(\'' + row.id + '\')">删除</a></li>' +
-                                '</ul></div>';
-                    },
-                    "targets": 3
-                }
+//                {
+//                    "render": function (data, type, row) {
+//                        return '<div class="btn-group"><button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">' +
+//                                ' <i class="ti-settings"></i> <span class="ti-angle-down"></span></button><ul class="dropdown-menu" role="menu">' +
+//                                '<li><a href="${base}/platform/shop/order/goods/detail/' + row.id + '" data-toggle="modal" data-target="#dialogDetail">查看</a></li>' +
+//                                '<li><a href="${base}/platform/shop/order/goods/edit/' + row.id + '" data-pjax>修改</a></li>' +
+//                                '<li class="divider"></li>' +
+//                                '<li><a href="javascript:;" onclick="del(\'' + row.id + '\')">删除</a></li>' +
+  //                              '</ul></div>';
+//                    },
+//                    "targets": 4
+//                }
             ]
         });
         datatable.on('click', 'tr', function () {
@@ -122,7 +115,7 @@ layout("/layouts/platform.html"){
         dialog.find("#okDel").bind("click", function (event) {
             var btn = $(this);
             btn.button("loading");
-            $.post("${base}/platform/shop/order/delete/" + id, {}, function (data) {
+            $.post("${base}/platform/shop/order/goods/delete/" + id, {}, function (data) {
                 if (data.code == 0) {
                     datatable.ajax.reload(null,false);
                 } else {
@@ -146,7 +139,7 @@ layout("/layouts/platform.html"){
             dialog.find("#okDel").bind("click", function (event) {
                 var btn = $(this);
                 btn.button("loading");
-                $.post("${base}/platform/shop/order/delete", {ids: ids.toString()}, function (data) {
+                $.post("${base}/platform/shop/order/goods/delete", {ids: ids.toString()}, function (data) {
                     if (data.code == 0) {
                         datatable.ajax.reload(null,false);
                     } else {

@@ -41,6 +41,24 @@ public class TestOrderGoodsController{
         return testOrderGoodsService.data(length, start, draw, order, columns, cnd, null);
     }
 
+    @At("/info/?")
+    @Ok("beetl:/platform/shop/order/goods/list.html")
+    @RequiresPermissions("platform.shop.order.goods")
+    public void index(String id,HttpServletRequest req) {
+        req.setAttribute("orderId",id);
+
+    }
+    @At("/datas/?")
+    @Ok("json")
+    @RequiresPermissions("platform.shop.order.goods")
+    public Object datas(String id,@Param("length") int length, @Param("start") int start, @Param("draw") int draw, @Param("::order") List<DataTableOrder> order, @Param("::columns") List<DataTableColumn> columns) {
+        Cnd cnd = Cnd.NEW();
+        cnd.and("orderId","=",id);
+        return testOrderGoodsService.data(length, start, draw, order, columns, cnd, null);
+    }
+
+
+
     @At("/add")
     @Ok("beetl:/platform/shop/order/goods/add.html")
     @RequiresPermissions("platform.shop.order.goods")
