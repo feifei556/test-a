@@ -1,7 +1,10 @@
 package cn.wizzer.app.web.modules.controllers.platform.shop;
 
+import cn.wizzer.app.shop.modules.models.Test_goods;
 import cn.wizzer.app.shop.modules.models.Test_order;
 import cn.wizzer.app.shop.modules.models.Test_order_goods;
+import cn.wizzer.app.shop.modules.services.TestGoodsService;
+import cn.wizzer.app.shop.modules.services.TestOrderGoodsService;
 import cn.wizzer.app.shop.modules.services.TestOrderService;
 import cn.wizzer.app.sys.modules.models.Sys_user;
 import cn.wizzer.app.sys.modules.services.SysUserService;
@@ -37,6 +40,12 @@ public class TestOrderPaymentController{
 
     @Inject
     private TestOrderService testOrderService;
+
+    @Inject
+    private TestGoodsService testGoodsService;
+
+    @Inject
+    private TestOrderGoodsService testOrderGoodsService;
 
     @At("")
     @Ok("beetl:/platform/shop/order/payment/index.html")
@@ -85,12 +94,20 @@ public class TestOrderPaymentController{
            Test_order test_order=testOrderService.fetch(Cnd.where("id","=",orderId));
            test_order.setPayState("1");
                  testOrderService.update(test_order);
-                 return Result.success("支付成功");
+       List<Test_order_goods>    list=testOrderGoodsService.query(Cnd.where("orderId","=",orderId));
+       for(Test_order_goods testOrderGoods:list){
+           Test_goods test_goods=testGoodsService.fetch(Cnd.where("id","=",testOrderGoods.getGoodId()));
+           test_goods.setGoodFrozenStore(0);
+           testGoodsService.update(test_goods);
+
+       }
+       return Result.success("支付成功");
              }else{
                  return Result.error("余额不足,无法支付");
              }
-         }else{
-            return Result.error("密码错误");
+         }else
+             {
+             return Result.error("支付密码错误");
          }
      }
     return  "";
