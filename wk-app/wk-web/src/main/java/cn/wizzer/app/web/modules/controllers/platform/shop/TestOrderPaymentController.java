@@ -64,10 +64,10 @@ public class TestOrderPaymentController{
     public Object pay(HttpServletRequest req) {
         String  orderId=Strings.sBlank(req.getParameter("orderId"));
         String  payType=Strings.sBlank(req.getParameter("payMethod"));
-
+        String  userId=Strings.sBlank(req.getParameter("userId"));
         String  payPass=Strings.sBlank(req.getParameter("payPass"));
         int pay=Integer.parseInt(req.getParameter("pay"));
-     Sys_user user=sysUserService.fetch(Cnd.where("id","=",orderId));
+     Sys_user user=sysUserService.fetch(Cnd.where("id","=",userId));
      int count=0;
      if(user!=null){
          if(user.getPayPassword().equals(payPass)){
@@ -76,6 +76,7 @@ public class TestOrderPaymentController{
                  sysUserService.update(user);
                  Test_order_payment test_order_payment=new Test_order_payment();
                  test_order_payment.setOrderId(orderId);
+                 test_order_payment.setUserId(userId);
                  test_order_payment.setPay(pay);
                  test_order_payment.setPayMethod(payType);
                 int time =(int)(System.currentTimeMillis()/1000);
