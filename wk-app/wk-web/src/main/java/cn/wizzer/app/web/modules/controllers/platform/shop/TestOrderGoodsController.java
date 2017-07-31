@@ -38,9 +38,7 @@ public class TestOrderGoodsController{
     @RequiresPermissions("platform.shop.order.goods")
     public Object data(@Param("length") int length, @Param("start") int start, @Param("draw") int draw, @Param("::order") List<DataTableOrder> order, @Param("::columns") List<DataTableColumn> columns) {
 		Cnd cnd = Cnd.NEW();
-        cnd.and("payState","=","0");
-
-		return testOrderGoodsService.data(length, start, draw, order, columns, cnd, null);
+        return testOrderGoodsService.data(length, start, draw, order, columns, cnd, null);
     }
 
     @At("/add")
