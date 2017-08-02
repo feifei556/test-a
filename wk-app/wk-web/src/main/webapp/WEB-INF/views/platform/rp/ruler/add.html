@@ -1,0 +1,266 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<script src="${base!}/assets/plugins/ueditor/ueditor.config.js"></script>
+<script src="${base!}/assets/plugins/ueditor/ueditor.all.min.js"></script>
+<header class="header navbar bg-white shadow">
+    <div class="btn-group tool-button">
+        <a class="btn btn-primary navbar-btn" href="${base}/platform/rp/ruler" id="goBack" data-pjax><i class="ti-angle-left"></i>${msg['globals.button.back']}</a>
+    </div>
+</header>
+<div class="content-wrap">
+    <div class="wrapper" style="min-height:500px;">
+        <section class="panel panel-form">
+
+            <form id="addForm" role="form" class="form-horizontal parsley-form " data-parsley-validate
+                  action="${base}/platform/rp/ruler/addDo" method="post" onsubmit="return review()">
+                <div class="row mb10">
+                    <div class="col-lg-12">
+                        <input type="hidden" id="qrcode_id" name="qrcode_id" value="" >
+                        <!--二维码模块-->
+                        <div class="form-group">
+                            <label for="qrcode" class="col-sm-2 control-label">二维码</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input  id="qrcode" name="qrcode" type="hidden" class="form-control" validate="true"
+                                            placeholder="请选择二维码" readonly />
+                                    <span class="input-group-btn">
+				                             			<button type="button" class="btn btn-primary" data-toggle="modal"
+                                                                data-target="#selectQrcode"><i class="ti-plus"></i> 选择
+                                                        </button>
+				                             		</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!--红包模块-->
+                        <!--遍历红包,value等于红包id,内容等于红包标题-->
+                        <div class="form-group">
+                            <label for="redpacket_id" class="col-sm-2 control-label">红包</label>
+                            <div class="col-sm-8">
+                                <select id="redpacket_id" name="redpacket_id" data-parsley-required="true" class="form-control">
+                                    <option value="">请选择红包</option>
+                                    <%if(!isEmpty(listRedPacket)){ for(o in listRedPacket){
+                                    %>
+                                    <option value="${o.id}">${o.rp_title}</option>
+                                    <%
+                                    } }%>
+                                </select>
+                            </div>
+                        </div>
+                        <!--产品模块-->
+                        <!--遍历产品,value等于产品id,内容等于产品标题-->
+                        <div class="form-group">
+                            <label for="product_id" class="col-sm-2 control-label">产品</label>
+                            <div class="col-sm-8">
+
+                                <select id="product_id" name="product_id" data-parsley-required="true" class="form-control">
+                                    <option value="">请选择产品</option>
+                                    <%if(!isEmpty(listProduct)){ for(o in listProduct){
+                                    %>
+                                    <option value="${o.id}">${o.product_name}</option>
+                                    <%
+                                    } }%>
+                                </select>
+                            </div>
+                        </div>
+                        <!--开始时间-->
+                        <!--此处使用datatimepick-->
+                        <div class="form-group text-center">
+                            <label for="start_time" class="col-sm-2 control-label">开始时间</label>
+                            <div class="col-sm-3 input-group date form_datetime " data-date="1979-09-16" data-date-format="dd MM yyyy - HH:ii p" data-link-field="start_time">
+                                <input type="text" id="beginDatePick" size="16" readonly="" class="form-control" value="${@date.getDateTime()}">
+                                <span class="input-group-addon"><span id="date" class="glyphicon glyphicon-th"></span></span>
+                            </div>
+                            <input type="hidden" id="start_time" name="start_time" value="${@date.getDateTime()}">
+                        </div>
+                        <!--结束时间-->
+                        <div class="form-group text-center">
+                            <label for="close_time" class="col-sm-2 control-label">结束时间</label>
+                            <div class="col-sm-3 input-group date form_datetime "  data-date="1979-09-16" data-date-format="dd MM yyyy - HH:ii p" data-link-field="close_time">
+                                <input type="text" id="endDatePick" size="16" readonly="" class="form-control" value="${@date.getDateTime()}">
+                                <span id="a" class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                                <span id="day" style="margin-top: 0px; color: #F00;font-size: medium"></span>
+                            </div>
+                            <input type="hidden" id="close_time" name="close_time" value="${@date.getDateTime()}">
+                        </div>
+                        <!--成功页面-->
+                        <div class="form-group text-center">
+                            <label for="success_page" class="col-sm-2 control-label">成功页面</label>
+                            <div class="col-sm-4">
+                                <input type="text" id="success_page" class="form-control" name="success_page" placeholder="成功页面">
+                            </div>
+                        </div>
+                        <!--失败页面-->
+                        <div class="form-group text-center">
+                            <label for="fail_page" class="col-sm-2 control-label">失败页面</label>
+                            <div class="col-sm-4">
+                                <input type="text" id="fail_page" class="form-control" name="fail_page" placeholder="失败页面">
+                            </div>
+                        </div>
+                        <div class="form-group text-center">
+                            <label for="disabled" class="col-sm-2 control-label">是否启用</label>
+                            <div class="col-sm-4 switcha">
+                                <div class="mr15">
+                                    <input type="checkbox" id="disabled" name="disabled" class="js-switch-blue" value="true" >
+                                </div>
+                            </div>
+                        </div>
+                        <!--中奖概率-->
+                        <div class="form-group text-center">
+                            <label for="winning_probability" class="col-sm-2 control-label">中奖概率(%)</label>
+                            <div class="col-sm-4">
+                                <input type="text" id="winning" class="form-control" name="winning" data-parsley-required="true" placeholder="中奖概率" max="99" min="1">
+                            </div>
+                            <input type="hidden" id="winning_probability" name="winning_probability">
+                        </div>
+                        <!--规则介绍-->
+                        <div class="form-group text-center">
+                            <label for="introduce" class="col-sm-2 control-label">规则介绍</label>
+
+                            <div class="col-sm-8">
+                                <textarea id="introduce" name="introduce" style="width:100%;height:200px;"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3"></div>
+                <div class="col-lg-6">
+                    <div class="form-group text-center">
+                        <label></label>
+                        <div>
+                            <button id="submitBtn" class="btn submitBtn btn-primary btn-block btn-lg btn-parsley" data-loading-text="正在提交...">
+                                提 交
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+//注意此处为模态框
+<!--模态框-->
+<div id="selectQrcode" class="modal fade bs-modal-sm" tabindex="-2" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    选择二维码
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                <input style="width: 50%" id="qrcodeNum" name="qrcodeNum" type="text" placeholder="请输入要选择的二维码个数">
+                </div>
+                    <label class=" control-label">可选二维码数:</label>
+                    <input id="qrcodeEnable" style="border-style:none" readonly>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button id="_selectOn" type="button" class="btn btn-primary" onclick="_selectOn()">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script language="JavaScript">
+    var ue;
+    var ids = [];
+    $(document).ready(function () {
+    //此处使用jquery和ajax输出返回值
+        $.ajax({
+                type: "post",
+                url: "${base}/platform/rp/ruler/qrcodeEnable" ,
+                async: false,
+                dataType: "json",
+                success:function (msg) {
+                    $("#qrcodeEnable").val(msg);
+                }
+            })
+        //百度富文本延迟0.5秒显示
+        setTimeout(function () {
+            ue= new baidu.editor.ui.Editor();
+            ue.render('introduce');
+        },500);
+        myForm.init();
+        //datetimepicker使用
+        //.datetimepicker 使用
+        $('.form_datetime').datetimepicker({
+            language:  'zh-CN',
+            format:'yyyy-mm-dd hh:ii:ss',//日期格式
+            weekStart: 1,//从哪天开始,0~6
+            todayBtn:  1,//日期选择组件底部选择今天
+            autoclose: 1,//选择日期后是否立即关闭日期选择器
+            todayHighlight: 1,//高亮当前日期`
+            startView: 2,//日期时间选择器打开之后首先显示的视图
+            forceParse: 0,//输入不正确,强制解析,false代表不解析
+            showMeridian: 1
+        });
+        //提交时进行数据处理
+        $("#submitBtn").click(function () {
+            //Date解析时间字符串对象.输出一个与19070年至今的毫秒数的Number对象,然后转成字符串,
+            //对字符串进行分割处理,去掉后三位,然后保存值
+            var beginDateStamp = Date.parse($('#start_time').val()).toString();
+            var dts = beginDateStamp.substr(0, beginDateStamp.length - 3);
+            $('#start_time').val(dts);
+            var endDateStamp = Date.parse($('#close_time').val()).toString();
+            var dts2 = endDateStamp.substr(0, endDateStamp.length - 3);
+            $("#close_time").val(dts2);
+            var winning2 = $("#winning").val() / 100;
+            $("#winning_probability").val(winning2);
+        });
+        $("#addForm").ajaxForm({
+            dataType: 'json',
+            beforeSubmit: function (arr, form, options) {
+                //获取选择的菜单
+                form.find("button:submit").button("loading");
+            },
+            success: function (data, statusText, xhr, form) {
+                if (data.code == 0) {
+                    Toast.success("操作成功！");
+                    form.resetForm();
+//                    $("#model_qrcode").val("");
+                } else {
+                    Toast.error(data.msg);
+                }
+                form.find("button:submit").button("reset");
+            }
+        });
+
+    });
+
+    function _selectOn() {
+        var num = $("#qrcodeNum").val();
+        var num2=$("#qrcodeEnable").val();
+        num=parseInt(num);
+        num2=parseInt(num2);
+        var ex = /^\d+$/;//是否为整数
+        var regu = "^[0-9]*$";
+        if(isNaN(num)||!ex.test(num.toString())){
+            Toast.error("请输入大于0的整数！");
+            $("#qrcodeNum").val("");
+        }else if (num>num2){
+            Toast.error("二维码剩余数量不足！");
+            $("#qrcodeNum").val("");
+        }
+        else{
+            $.ajax({
+                type: "post",
+                url: "${base}/platform/rp/ruler/qrcodeNum/" + num.toString(),
+                async: false,
+                dataType: "json",
+                success:function (msg) {
+                    for(var i=0;i<msg.length;i++){
+                        ids.push(msg[i].id)
+                    }
+                }
+            })
+
+            $("#qrcode_id").val(ids);
+            $("#selectQrcode").modal("toggle");
+            Toast.success("选择成功！")
+        }
+    };
+</script>
+<%}%>
+
+

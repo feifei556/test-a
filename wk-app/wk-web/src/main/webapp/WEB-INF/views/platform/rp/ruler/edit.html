@@ -1,0 +1,331 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<script src="/assets/plugins/jquery-1.11.1.min.js"></script>
+<script src="${base!}/assets/plugins/ueditor/ueditor.config.js"></script>
+<script src="${base!}/assets/plugins/ueditor/ueditor.all.min.js"></script>
+<script src="/bootstrap/js/bootstrap.min.js"></script>
+<header class="header navbar bg-white shadow">
+    <div class="btn-group tool-button">
+        <a class="btn btn-primary navbar-btn" href="${base}/platform/rp/ruler" id="goBack" data-pjax><i class="ti-angle-left"></i>返回</a>
+    </div>
+</header>
+
+<div class="content-wrap">
+    <div class="wrapper" style="min-height:500px;">
+        <section class="panel panel-form">
+            <form id="editForm" role="form" class="form-horizontal parsley-form" data-parsley-validate
+                  action="${base}/platform/rp/ruler/editDo" method="post" onsubmit="return review()">
+                <input name="id" type="hidden" value="${obj.id}">
+                <div class="row mb10">
+                    <div class="col-lg-12">
+                        <!--红包-->
+                        <div class="form-group">
+                            <label for="redpacket_id" class="col-sm-2 control-label">红包名称</label>
+                            <div class="col-sm-8">
+                                <select id="redpacket_id" name="redpacket_id" data-parsley-required="true" class="form-control">
+                                    <option id="selectRppack" value=""></option>
+                                    <%if(!isEmpty(listRedPacket)){ for(o in listRedPacket){
+                                    %>
+                                    <option value="${o.id}" <%if(o.id==obj.redpacket_id){%>selected<%}%>>${o.rp_title}</option>
+                                    <%
+                                    } }%>
+                                </select>
+                            </div>
+                        </div>
+                        <!--产品-->
+                        <!--先遍历打印要选择的产品id,再输出选中状态,最后进行修改-->
+                        <div class="form-group">
+                            <label for="product_id" class="col-sm-2 control-label">产品名称</label>
+                            <div class="col-sm-8">
+                                <select id="product_id" name="product_id" data-parsley-required="true" class="form-control">
+                                    <option id="selectProduct" value=""></option>
+                                    <%if(!isEmpty(listProduct)){ for(o in listProduct){
+                                    %>
+                                    <option value="${o.id}"<%if(o.id==obj.product_id){%>selected<%}%>>${o.product_name}</option>
+                                    <%
+                                    } }%>
+                                </select>
+                            </div>
+                        </div>
+                        <!--中奖概率-->
+                        <div class="form-group">
+                            <label for="winning_probability" class="col-sm-2 control-label">中奖概率</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="winning_probability" class="form-control" name="winning_probability" data-parsley-required="true"
+                                       placeholder="中奖概率" value="${obj.winning_probability}" >
+                            </div>
+                        </div>
+                        <!--开始时间-->
+                        <div class="form-group text-center">
+                            <label for="start_time" class="col-sm-2 control-label">开始时间</label>
+                            <div class="col-sm-3 input-group date form_datetime " data-date="1979-09-16" data-date-format="dd MM yyyy - HH:ii p" data-link-field="start_time">
+                                <input type="text" id="beginDatePick" size="16" readonly="" class="form-control" value="${@date.getDateTime()}">
+                                <span class="input-group-addon"><span id="date" class="glyphicon glyphicon-th"></span></span>
+                            </div>
+                            <input type="hidden" id="start_time" name="start_time" value="${@date.getDateTime()}">
+                        </div>
+                        <!--结束时间-->
+                        <div class="form-group text-center">
+                            <label for="close_time" class="col-sm-2 control-label">结束时间</label>
+                            <div class="col-sm-3 input-group date form_datetime "  data-date="1979-09-16" data-date-format="dd MM yyyy - HH:ii p" data-link-field="close_time">
+                                <input type="text" id="endDatePick" size="16" readonly="" class="form-control" value="${@date.getDateTime()}">
+                                <span id="a" class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+                                <span id="day" style="margin-top: 0px; color: #F00;font-size: medium"></span>
+                            </div>
+                            <input type="hidden" id="close_time" name="close_time" value="${@date.getDateTime()}">
+                        </div>
+                        <!--成功页面-->
+                        <div class="form-group">
+                            <label for="success_page" class="col-sm-2 control-label">成功页面</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="success_page" class="form-control" name="success_page" data-parsley-required="true"
+                                       placeholder="成功页面" value="${obj.success_page}" >
+                            </div>
+                        </div>
+                        <!--失败页面-->
+                        <div class="form-group">
+                            <label for="fail_page" class="col-sm-2 control-label">失败页面</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="fail_page" class="form-control" name="fail_page" data-parsley-required="true"
+                                       data-parsley-validate="email"
+                                       placeholder="失败页面" value="${obj.fail_page}" >
+                            </div>
+                        </div>
+                        <!--是否启用-->
+                        <div class="form-group text-center">
+                            <label for="disabled" class="col-sm-2 control-label">是否启用</label>
+                            <div class="col-sm-4 switcha">
+                                <div class="mr15">
+                                    <input type="checkbox" id="disabled" name="disabled" class="js-switch-blue" value="true" >
+                                </div>
+                            </div>
+                        </div>
+                        <!--介绍-->
+                        <div class="form-group">
+                            <label for="introduce" class="col-sm-2 control-label">介绍</label>
+                            <div class="col-sm-8">
+                                <textarea  type="text" id="introduce" name="introduce"style="...">
+                                      ${obj.introduce}
+                                </textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3"></div>
+                <div class="col-lg-6">
+                    <div class="form-group text-center">
+                        <label></label>
+
+                        <div>
+                            <button id="submitBtn"class="btn btn-primary btn-block btn-lg btn-parsley" data-loading-text="正在提交...">提 交</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </div>
+</div>
+<script language="JavaScript">
+
+    $(document).ready(function () {
+        $('#editForm').ajaxForm({
+            dataType: 'json',
+            beforeSubmit: function (arr, form, options) {
+                form.find("button:submit").button("loading");
+            },
+            success: function (data, statusText, xhr, form) {
+                if (data.code == 0) {
+                    Toast.success(data.msg);
+                    setTimeout(function () {
+                        $("#goBack").trigger("click");
+                    }, 1000);
+                } else {
+                    Toast.error(data.msg);
+                }
+                form.find("button:submit").button("reset");
+            }
+        });
+    });
+    //红包名称查询
+    var  id="${obj.redpacket_id}";
+    var  redPacket_title=null;
+    $.ajax({
+        type: "POST",
+        url: "${base}/platform/rp/ruler/selectRppack/" + id,
+        async: false,
+        dataType: "json",
+        success: function (msg) {
+            //alert(msg);
+            redPacket_title = msg.rp_title;
+            $("#selectRppack").append(redPacket_title);
+        }
+    })
+    //产品名称查询
+    var id="${obj.product_id}";
+    var product_name=null;
+    $.ajax({
+        type:"post",
+        url:"${base}/platform/rp/ruler/selectProductName/" + id,
+        async:false,
+        dataType:"json",
+        success:function (msg) {
+            // alert(msg.product_name);
+            product_name=msg.product_name;
+            $("#selectProduct").append(product_name);
+        }
+    });
+    var ue;
+    $(document).ready(function () {
+        setTimeout(function () {
+            ue= new baidu.editor.ui.Editor();
+            ue.render('introduce');
+        },500);
+        myForm.init();
+        $('.form_datetime').datetimepicker({
+            language:  'zh-CN',
+            format:'yyyy-mm-dd hh:ii:ss',
+            weekStart: 1,
+            todayBtn:  1,
+            autoclose: 1,
+            todayHighlight: 1,
+            startView: 2,
+            forceParse: 0,
+            showMeridian: 1
+        });
+
+        $("#submitBtn").click(function () {
+            $(function () {
+                var beginDateStamp  = Date.parse($('#start_time').val()).toString();
+                var dts = beginDateStamp.substr(0,beginDateStamp.length-3);
+                $('#start_time').val(dts);
+            });
+            $(function () {
+                var endDateStamp  = Date.parse($('#close_time').val()).toString();
+                var dts = endDateStamp.substr(0,endDateStamp.length-3);
+                $("#close_time").val(dts);
+            });
+        });
+
+        initTreeView();
+
+        $('#file_upload').uploadifive({
+            'auto': true,
+            'multi': false,
+            'width': '100%',
+            'height': '35',
+            'buttonText': '请选择图片',
+            'fileType': 'image/jpg,image/jpeg,image/png',
+            'fileSizeLimit': 1024,
+            'queueSizeLimit': 1,
+            'formData': {},
+            'queueID': 'queue',
+            'uploadScript': '${base}/open/file/upload/image',
+            'onUploadComplete': function (file, data) {
+                data = JSON.parse(data);
+                if (data.code == 0) {
+                    Toast.success(data.msg);
+                    $("#img").html("<img src='" + data.data + "' style='width:150px;height:95px;'>");
+                    $("#picurl").val(data.data);
+                } else {
+                    clearFile();
+                    Toast.error(data.msg);
+                }
+            },
+            'onDrop': function (file, fileDropCount) {
+                clearFile();
+            },
+            'onClearQueue': function (queue) {
+                clearFile();
+            },
+            'onCancel': function () {
+                clearFile();
+            }
+        });
+        $("#save").on("click",function(){
+            $("#footer_content").val(ue.getContent());
+            // $('#addForm').submit();
+            if(review()){
+                $('#editForm').submit();
+            }
+        });
+        $('#editForm').ajaxForm({
+            dataType: 'json',
+            beforeSubmit: function (arr, form, options) {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            success: function (data, statusText, xhr, form) {
+                if (data.code == 0) {
+                    Toast.success(data.msg);
+                    setTimeout(function () {
+                        $("#goBack").trigger("click");
+                    }, 1000);
+                } else {
+                    Toast.error(data.msg);
+
+                }
+
+                sublime.closeLoadingbar($(".main-content"));
+            }
+        });
+    })
+    function initTreeView() {
+        $("#jsTree").jstree({
+            plugins: ["wholerow"],
+            core: {
+                data: {
+                    url: function (node) {
+                        return node.rp_qrcode=== "#" ? "${base}/platform/rp/ruler/selectQrcode" : "${base}/platform/rp/ruler/selectQrcode?rp_qrcode=" + node.rp_qrcode
+                    }
+                },
+                multiple: false
+            }
+        }).on("select_node.jstree", function (node, selected) {
+            var id = selected.selected;
+            $("#qrcode_id").val(rp_qrcode);
+            $("#searchForm").find("input[type='text']").val("");
+            if (datatable) {
+                $(".cd-panel-content").find("input").val("");
+                datatable.ajax.reload();
+            } else {
+                initDatatable();
+            }
+            $("#addLink").attr("href","${base}/platform/rp/ruler/add?qrcode_id="+id);
+        }).on("loaded.jstree", function (node, jstree) {
+            var id = $(node.target).find("li:first").attr("id");
+            if (id) {
+                jstree.instance.select_node(id);
+            }
+        });
+    }
+    //网址检测
+    function review() {
+
+        var str=$("#success_page").val();
+        var str2=$("#fail_page").val();
+        var strRegex = /^(?:http(?:s|):\/\/|)(?:(?:\w*?)\.|)(?:\w*?)\.(?:\w{2,4})(?:\?.*|\/.*|)$/ig;
+
+        var re = new RegExp(strRegex);
+        var i=0;
+        if(re.test(str)){
+
+        }else{
+
+            i++;
+        }
+
+        var re2=new RegExp(strRegex);
+        if(re2.test(str2)){
+
+        }else {
+
+            i++;
+        }
+        if(i==0){
+            return true;
+        }
+        return false;
+    }
+</script>
+<%}%>

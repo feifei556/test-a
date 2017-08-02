@@ -1,0 +1,41 @@
+<div class="modal-body no-p">
+    <div class="row">
+        <div class="col-xs-12">
+            <section class="panel panel-primary no-b">
+                <header class="panel-heading clearfix brtl brtr">
+                    <div class="overflow-hidden">
+                        <a href="javascript:;" class="h4 show no-m pt5">Rp_conditon</a>
+                        <small>${obj.id}</small>
+                    </div>
+                </header>
+                <div class="list-group">
+                    <table class="table table-bordered table-striped mg-t datatable">
+                        <tbody>
+                                                        <tr>
+                                <td>剩余奖金</td><td>${obj.left_money}</td>
+                            </tr>
+                                                        <tr>
+                                <td>扫码次数</td><td>${obj.scan_num}</td>
+                            </tr>
+                                                        <tr>
+                                <td>奖池</td><td>${obj.jackpot}</td>
+                            </tr>
+                                                        <tr>
+                                <td>红包id</td><td>${obj.redpacket_id}</td>
+                            </tr>
+                                                        <tr>
+                                <td>二维码id</td><td>${obj.qrcode_id}</td>
+                            </tr>
+                                                        <tr>
+                                <td>规则id</td><td>${obj.rule_id}</td>
+                            </tr>
+                                                    </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary btn-block" data-dismiss="modal">知道了</button>
+</div>

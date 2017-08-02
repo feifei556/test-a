@@ -1,0 +1,462 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<script src="${base!}/assets/plugins/ueditor/ueditor.config.js"></script>
+<script src="${base!}/assets/plugins/ueditor/ueditor.all.min.js"></script>
+<header class="header navbar bg-white shadow">
+    <div class="btn-group tool-button">
+        <a class="btn btn-primary navbar-btn" href="${base}/platform/rp/redpacket" id="goBack" data-pjax><i class="ti-angle-left"></i>返回</a>
+    </div>
+</header>
+
+<div class="content-wrap">
+    <div class="wrapper" style="min-height:500px;">
+        <section class="panel panel-form">
+            <form id="addForm" role="form" class="form-horizontal parsley-form" data-parsley-validate
+                  action="${base}/platform/rp/redpacket/addDo" method="post">
+                <div class="row mb10">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label for="rp_title" class="col-sm-2 control-label">红包标题</label>
+                            <div class="col-sm-8">
+                            <input type="text" id="rp_title" class="form-control" name="rp_title" data-parsley-required="true" placeholder="红包标题">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="total_money" class="col-sm-2 control-label">红包总金额（单位：元）</label>
+                            <div class="col-sm-8">
+                            <input type="text" id="total_money" class="form-control" name="total_money" data-parsley-required="true" placeholder="红包总金额 最多两位小数">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="sweepstakes" class="col-sm-2 control-label">中奖模式</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" name="sweepstakes" id="sweepstakes">
+                                    <option value="随机">随机</option>
+                                    <option value="固定">固定</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="count_no" class="col-sm-2 control-label">红包数量</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="count_no" class="form-control" name="count_no" data-parsley-required="true" placeholder="红包数量">
+                            </div>
+                        </div>
+                        <div class="form-group" id="each_money_content" >
+                            <label for="each_money" class="col-sm-2 control-label">每份奖额（单位：元）</label>
+                            <div class="col-sm-8" id="each_money_content_inner" >
+                            <input type="text" id="each_money" readonly class="form-control" name="each_money" placeholder="每份奖额 最多两位小数">
+                            </div>
+                        </div>
+                        <div class="form-group" id="min_prize_per_content">
+                            <label for="min_prize_per" class="col-sm-2 control-label">红包最小金额（单位：元）</label>
+                            <div class="col-sm-8">
+                            <input type="text" id="min_prize_per" class="form-control" name="min_prize_per" data-parsley-required="true" placeholder="红包最小金额 最多两位小数">
+                            </div>
+                        </div>
+                        <div class="form-group" id="max_prize_per_content">
+                            <label for="max_prize_per" class="col-sm-2 control-label">红包最大金额（单位：元）</label>
+                            <div class="col-sm-8">
+                            <input type="text" id="max_prize_per" class="form-control" name="max_prize_per" data-parsley-required="true" placeholder="红包最大金额 最多两位小数">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="validity" class="col-sm-2 control-label">红包有效期（单位：分钟）</label>
+                            <div class="col-sm-8">
+                            <input type="text" id="validity" class="form-control" name="validity" data-parsley-required="true" placeholder="红包有效期">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="rp_notice" class="col-sm-2 control-label">红包提示</label>
+                            <div class="col-sm-8">
+                                <textarea id="rp_notice" name="rp_notice" data-parsley-required="true" style="width:100%;height:130px;"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="disabled" class="col-sm-2 control-label">是否启用</label>
+                            <div class="col-sm-8 switcha">
+                                <div class="mr15">
+                                    <input type="checkbox" id="disabled" name="disabled" class="js-switch-blue" >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3"></div>
+                <div class="col-lg-6">
+                    <div class="form-group text-center">
+                        <label></label>
+                        <div>
+                            <button id="sub" class="btn btn-primary btn-block btn-lg btn-parsley" data-loading-text="正在提交...">提 交</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+<script language="JavaScript">
+    $(document).ready(function () {
+        $('#addForm').ajaxForm({
+            dataType: 'json',
+            beforeSubmit: function (arr, form, options) {
+                form.find("button:submit").button("loading");
+            },
+            success: function (data, statusText, xhr, form) {
+                if (data.code == 0) {
+                    Toast.success(data.msg);
+                    setTimeout(function () {
+                        $("#goBack").trigger("click");
+                    }, 1000);
+                } else {
+                    Toast.error(data.msg);
+                }
+                form.find("button:submit").button("reset");
+            }
+        });
+        //添加百度富文本 给红包提示用
+        var ue;
+        setTimeout(function () {
+            ue = new baidu.editor.ui.Editor();
+            ue.render('rp_notice');
+        }, 500);
+        // 添加的checkbox的样式
+        myForm.init();
+        $("#each_money_content").hide();
+        //切换模式带来的输入框的改变
+        $("#sweepstakes").change(function () {
+            if ($("#sweepstakes").val() == "固定") {
+                //要有保存上一次的值的方法 检查是否输入了最大值和最小值
+                if ($("#max_prize_per").val().length > 0) {
+                    var max_temp = $("#max_prize_per").val();
+                    $("#max_prize_per").val(max_temp);
+                }
+                if ($("#min_prize_per").val().length > 0) {
+                    var min_temp = $("#min_prize_per").val();
+                    $("#min_prize_per").val(min_temp);
+                }
+                //显示和隐藏
+                $("#max_prize_per_content").hide();
+                $("#min_prize_per_content").hide();
+                $("#each_money_content").show();
+            } else {
+                if ($("#each_money").val().length > 0) {
+                    var em_temp = $("#each_money").val();
+                    $("#each_money").val(em_temp);
+                }
+                //显示和隐藏
+                $("#max_prize_per_content").show();
+                $("#min_prize_per_content").show();
+                $("#each_money_content").hide();
+            }
+        });
+        //红包标题验证
+        $("#rp_title").blur(function () {
+            if ($("#rp_title").val().length > 100) {
+                if ($("#rp_title_msg").length > 0) {
+                    return null;
+                } else {
+                    $("<span id='rp_title_msg'  style='color: #ff1835'>红包标题不能大于100个字符</span>").insertAfter("#rp_title");
+                }
+            } else {
+                $("#rp_title_msg").remove();
+            }
+        });
+        //红包有效期验证 正整数
+        $("#validity").blur(function () {
+            var reg = /^[0-9]*[1-9][0-9]*$/;
+            if (!(reg.test($("#validity").val()))) {
+                if ($("#validity_msg").length > 0) {
+                    return null;
+                } else {
+                    $("<span id='validity_msg' style='color: #ff1835'>红包有效期为正整数</span>").insertAfter("#validity");
+                }
+            } else {
+                $("#validity_msg").remove();
+            }
+        });
+        //红包总金额验证 包含两位小数
+        $("#total_money").blur(function () {
+            var tm = $("#total_money");//红包总金额
+            // 匹配两位小数 且大于1  || parseInt(tm.val())<=1
+            var r = /^[0-9]+(.[0-9]{1,2})?$/;
+            if (!r.test(tm.val()) || 1 > parseFloat(tm.val())) {
+                // alert('$("#total_money_msg").html().length>0'); 死循环
+                // alert($("#total_money_msg").length>0); 成立的
+                if ($("#total_money_msg").length > 0) {
+                    return null;
+                } else {
+                    $("<span id='total_money_msg' style='color: #ff1835'>红包总金额大于1且最多两位小数</span>").insertAfter("#total_money");
+                }
+            } else {
+                if ($("#total_money_msg").length > 0) {
+                    $("#total_money_msg").remove();
+                    return null;
+                } else {
+                    return null;
+                }
+            }
+        });
+        //红包数量验证 包括每份奖额验证
+        $("#count_no").blur(function () {
+            var cn = $("#count_no");
+            var reg = /^[0-9]*[1-9][0-9]*$/;
+            //判定是否为正整数
+            if (reg.test(cn.val())) {
+                //判定是否输入了总金额
+                if ($("#total_money").val().length > 0 && !($("#total_money_msg").length > 0)) {
+                    // 输入了总金额 判定是否大于总金额
+                    var tm = $("#total_money");
+                    var tm_val_float = parseFloat(tm.val() * 100);
+                    var cn_val_float = parseFloat(cn.val());
+                    if (cn_val_float <= tm_val_float) {
+                        //判定设置的“固定模式”中的单份奖额是否符合要求
+                        if($("#sweepstakes").val() == "固定"){
+                            if (tm_val_float % cn_val_float == 0) {
+                                //设置固定模式的单份金额 each_money
+                                var em = tm_val_float / cn_val_float / 100;
+                                //得到每份金额赋值 先删去节点 再添加节点
+                                $("#each_money").remove();
+                                $("#each_money_content_inner").html('<input type="text" id="each_money" readonly class="form-control" value="'+em+'" name="each_money" data-parsley-required="true" placeholder="每份奖额">');
+                                $("#count_no_msg").remove();
+                                return null;
+                            } else {
+                                $("#count_no_msg").remove();
+                                $("<span id='count_no_msg' style='color: #ff1835'>红包数量设置不合法</span>").insertAfter("#count_no");
+                                return null;
+                            }
+                        } else{ //随机模式下的单份奖额不做要求
+                            $("#count_no_msg").remove();
+                            return null;
+                        }
+                    } else {
+                        $("#count_no_msg").remove();
+                        $("<span id='count_no_msg' style='color: #ff1835'>红包数量不能大于红包总金额</span>").insertAfter("#count_no");
+                        return null;
+                    }
+                } else {
+                    $("#count_no_msg").remove();
+                    $("<span id='count_no_msg' style='color: #ff1835'>请输入红包总金额或红包总金额不合法</span>").insertAfter("#count_no");
+                    return null;
+                }
+            } else {
+                $("#count_no_msg").remove();
+                $("<span id='count_no_msg' style='color: #ff1835'>红包数量为正整数</span>").insertAfter("#count_no");
+                return null;
+            }
+        });
+        //红包最小金额验证 正数
+        $("#min_prize_per").blur(function () {
+            var min = $("#min_prize_per");
+            var reg = /^[0-9]+(.[0-9]{1,2})?$/;
+            //验证正数
+            if(reg.test(min.val()) && parseFloat(min.val()) > 0){
+                //验证总金额是否输入
+                //总金额输入了 且合法
+                if ($("#total_money").val().length > 0 && !$("#total_money_msg").length > 0) {
+                    //判定最小值与总金额的关系是否合法  假定红包数量已经输入
+                    if ( parseFloat($("#min_prize_per").val()) < parseFloat($("#total_money").val()) / parseFloat($("#count_no").val())) {
+                        if($("#min_prize_per_msg").length > 0){
+                            $("#min_prize_per_msg").remove();
+                            return null;
+                        }else{
+                            return null;
+                        }
+                    }else {
+                        if($("#min_prize_per_msg").length > 0){
+                            $("#min_prize_per_msg").remove();
+                            $("<span id='min_prize_per_msg' style='color: #ff1835'>最小金额过大</span>").insertAfter("#min_prize_per");
+                            return null;
+                        }else{
+                            $("<span id='min_prize_per_msg' style='color: #ff1835'>最小金额过大</span>").insertAfter("#min_prize_per");
+                            return null;
+                        }
+                    }
+                }else{
+                    if($("#min_prize_per_msg").length > 0){
+                        $("#min_prize_per_msg").remove();
+                        $("<span id='min_prize_per_msg' style='color: #ff1835'>请输入合法的总金额</span>").insertAfter("#min_prize_per");
+                        return null;
+                    }else{
+                        $("<span id='min_prize_per_msg' style='color: #ff1835'>请输入合法的总金额</span>").insertAfter("#min_prize_per");
+                        return null;
+                    }
+                }
+            }else {
+                $("#min_prize_per_msg").remove();
+                $("<span id='min_prize_per_msg' style='color: #ff1835'>最小金额为正数</span>").insertAfter("#min_prize_per");
+                return null;
+            }
+        });
+        //红包最大金额验证 正整数
+        $("#max_prize_per").blur(function(){
+            var max = $("#max_prize_per");
+            var reg = /^[0-9]+(.[0-9]{1,2})?$/;
+            //验证正数
+            if(reg.test(max.val()) && parseFloat(max.val()) > 0){
+                //判定最大值是否大于红包总金额
+                if ($("#total_money").val().length > 0 && !$("#total_money_msg").length > 0) {
+                    // 假定红包数量已经输入
+                    if ( parseFloat($("#max_prize_per").val()) < parseFloat($("#total_money").val()) && parseFloat($("#max_prize_per").val()) * parseFloat($("#count_no").val()) > parseFloat($("#total_money").val())) {
+                        //验证最小值是否输入
+                        //最小值输入了 且合法
+                        if ($("#min_prize_per").val().length > 0 && !$("#min_prize_per_msg").length > 0) {
+                            //判定最小值是否小于最大值
+                            if ( parseFloat($("#min_prize_per").val()) < parseFloat($("#max_prize_per").val())) {
+                                if($("#max_prize_per_msg").length > 0){
+                                    $("#max_prize_per_msg").remove();
+                                    return null;
+                                }else{
+                                    return null;
+                                }
+                            }else {
+                                if($("#max_prize_per_msg").length > 0){
+                                    $("#max_prize_per_msg").remove();
+                                    $("<span id='max_prize_per_msg' style='color: #ff1835'>最小金额不能大于最大金额</span>").insertAfter("#max_prize_per");
+                                    return null;
+                                }else{
+                                    $("<span id='max_prize_per_msg' style='color: #ff1835'>最小金额不能大于最大金额</span>").insertAfter("#max_prize_per");
+                                    return null;
+                                }
+                            }
+                        }else{
+                            if($("#max_prize_per_msg").length > 0){
+                                $("#max_prize_per_msg").remove();
+                                $("<span id='max_prize_per_msg' style='color: #ff1835'>请输入合法的最小金额</span>").insertAfter("#max_prize_per");
+                                return null;
+                            }else{
+                                $("<span id='max_prize_per_msg' style='color: #ff1835'>请输入合法的最小金额</span>").insertAfter("#max_prize_per");
+                                return null;
+                            }
+                        }
+                    }else {
+                        if($("#max_prize_per_msg").length > 0){
+                            $("#max_prize_per_msg").remove();
+                            $("<span id='max_prize_per_msg' style='color: #ff1835'>最大金额过小</span>").insertAfter("#max_prize_per");
+                            return null;
+                        }else{
+                            $("<span id='max_prize_per_msg' style='color: #ff1835'>最大金额过小</span>").insertAfter("#max_prize_per");
+                            return null;
+                        }
+                    }
+                }else{
+                    if($("#max_prize_per_msg").length > 0){
+                        $("#max_prize_per_msg").remove();
+                        $("<span id='max_prize_per_msg' style='color: #ff1835'>请输入合法的总金额</span>").insertAfter("#max_prize_per");
+                        return null;
+                    }else{
+                        $("<span id='max_prize_per_msg' style='color: #ff1835'>请输入合法的总金额</span>").insertAfter("#max_prize_per");
+                        return null;
+                    }
+                }
+            }else {
+                $("#max_prize_per_msg").remove();
+                $("<span id='max_prize_per_msg' style='color: #ff1835'>最大金额为正数</span>").insertAfter("#max_prize_per");
+                return null;
+            }
+        });
+        //提交的验证
+        $("#sub").bind("click",function(){
+            //两种模式都有的属性验证
+            if($("#rp_title_msg").length > 0 ) {
+                Toast.error("你输入的标题不合法！");
+                return false;
+            }
+            if($("#total_money_msg").length > 0 ) {
+                Toast.error("你输入的总金额不合法！");
+                return false;
+            }
+            if($("#count_no_msg").length > 0 ) {
+                Toast.error("你输入的红包数量不合法！");
+                return false;
+            }
+            if($("#validity_msg").length > 0 ) {
+                Toast.error("你输入的有效期不合法！");
+                return false;
+            }
+            if ($("#sweepstakes").val() == "固定") { //固定模式下的不合法验证
+                //如果单份金额没有赋值
+                if (parseFloat($("#each_money").val()) == 0) {
+                    var em_now = parseFloat($("#total_money").val())*100 / $("#count_no").val();
+                    $("#each_money").val(em_now);
+                    var tm_now = parseFloat($("#total_money").val())*100;
+                    $("#total_money").val(tm_now);
+                    $("#min_prize_per").val(0);
+                    $("#max_prize_per").val(0);
+                }
+                //给页面上的不合数据库字段的属性重新赋值保存到数据库中
+                //总金额 ，单份奖额
+                else {
+                    var tm_now = parseFloat($("#total_money").val())*100;
+                    $("#total_money").val(tm_now);
+                    var em_now = parseFloat($("#each_money").val())*100;
+                    $("#each_money").val(em_now);
+                    //恢复最值的默认值
+                    $("#min_prize_per").val(0);
+                    $("#max_prize_per").val(0);
+                }
+                //这是红包pojo生成的add.html
+                $('#addForm').ajaxForm({
+                    dataType: 'json',
+                    beforeSubmit: function (arr, form, options) {
+                        form.find("button:submit").button("loading");
+                    },
+                    success: function (data, statusText, xhr, form) {
+                        if (data.code == 0) {
+                            Toast.success(data.msg);
+                            setTimeout(function () {
+                                $("#goBack").trigger("click");
+                            }, 1000);
+                        } else {
+                            Toast.error(data.msg);
+                        }
+                        form.find("button:submit").button("reset");
+                    }
+                });
+            }
+            //随机模式提交
+            if ($("#sweepstakes").val() == "随机") {
+                if ($("#min_prize_per_msg").length > 0 || $("#max_prize_per_msg").length > 0) {
+                    Toast.error("你输入的最值不合法！");
+                    return false;
+                }
+                else {
+                    //给页面上的不合数据库字段的属性重新赋值保存到数据库中
+                    //总金额 ，单份奖额
+                    var tm_now = parseFloat($("#total_money").val()) * 100;
+                    $("#total_money").val(tm_now);
+                    var min_now = parseFloat($("#min_prize_per").val()) * 100;
+                    $("#min_prize_per").val(min_now);
+                    var max_now = parseFloat($("#max_prize_per").val()) * 100;
+                    $("#max_prize_per").val(max_now);
+                    //恢复单份金额的默认值
+                    $("#each_money").val(0);
+                    //这是红包pojo生成的edit.html
+                    $(document).ready(function () {
+                        $('#addForm').ajaxForm({
+                            dataType: 'json',
+                            beforeSubmit: function (arr, form, options) {
+                                form.find("button:submit").button("loading");
+                            },
+                            success: function (data, statusText, xhr, form) {
+                                if (data.code == 0) {
+                                    Toast.success(data.msg);
+                                    setTimeout(function () {
+                                        $("#goBack").trigger("click");
+                                    }, 1000);
+                                } else {
+                                    Toast.error(data.msg);
+                                }
+                                form.find("button:submit").button("reset");
+                            }
+                        });
+                    });
+                }
+            }
+        });
+    });
+</script>
+<%}%>
+
+

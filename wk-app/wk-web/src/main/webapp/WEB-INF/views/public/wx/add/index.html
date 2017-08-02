@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>电子导航</title>
+
+    <!--<link rel="stylesheet" type="text/css" href="${base!}/assets/public/wx/add/css/css.css"/>-->
+    <!--<link rel="stylesheet" href="${base!}/assets/public/wx/add/css/zepto.mdatetimer.css">-->
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="format-detection" content="email=no"/>
+    <meta name="msapplication-tap-highlight" content="no">
+    <meta charset="utf-8">
+    <script type="text/javascript">
+        var base = '${base!}';
+    </script>
+    <!--<script type="text/javascript" src="${base!}/assets/public/wx/add/js/zepto.js"></script>-->
+    <!--<script type="text/javascript" src="${base!}/assets/public/wx/add/js/zepto.mdatetimer.js"></script>-->
+    <script src="../../../../assets/plugins/jquery-1.11.1.min.js"></script>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+
+</head>
+<body>
+<header class="ds-head">
+    <h1>公司检索</h1>
+</header>
+<div class="time">
+    <div class="time-li round-a"><span>公司名称：</span><input id="name"  type="text"
+                                                          value=""/></div>
+    <div class="btn"><input id="btn" type="button" value="立即查询" class="round-a"/></div>
+
+    <div class="time-li round-a"><span>当前位置：</span><input id="longitude"  type="text"
+                                                          value="" readonly/><input id="latitude"  type="text"
+                                                                                    value="" readonly/></div>
+</div>
+<ul class="earn">
+    <%for(o in list){%>
+    <li class="earn-li">
+        <dl>
+            <dt class="cf2"><span class="earn-lil">${o.name} </span></dt>
+            <dd class="cf2"><span class="earn-lil">lng:${o.lng}, lat:${o.lat}</span></dd>
+            <dd class="cf2">
+                <span><button onclick="goTo('walk','${o.name}','${o.lng}','${o.lat}');">步行</button></span>
+                <span><button onclick="goTo('drive','${o.name}','${o.lng}','${o.lat}');">驾车</button></span>
+            </dd>
+        </dl>
+    </li>
+    <%}elsefor{%>
+    没有检索到结果
+    <%}%>
+</ul>
+<script language="JavaScript">
+    $().ready(function () {
+        //初始化js_sdk
+        initPage();
+    });
+
+
+    function initPage() {
+        var urlTemp = location.href.split('#')[0];
+        var jsonData;
+        var id = $("#qrcode_id").val();
+        $.ajax({
+            type: "POST",
+            url: "${base}/open/scan/share/configs/" + id,
+            data: {urlTemp: urlTemp},
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                //json字符串转换为json对象
+                jsonData = JSON.parse(data);
+            }
+        });
+        //appid 取不出来，区分大小写,jsApiList中的中括号要舍弃
+        wx.config({
+            appId: jsonData.appId,
+            timestamp: jsonData.timestamp,
+            nonceStr: jsonData.nonceStr,
+            signature: jsonData.signature,
+            jsApiList: jsonData.jsApiList
+        });
+        var titleTemp = '扫二维码得红包';// 分享标题
+        var descTemp = '关注公众号扫二维码得红包';// 分享描述
+        // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致,且要根据对应的情况改变
+        var linkTemp = urlTemp.split("/o", 1) + "/o/s/" + id;
+        // 分享图标 图标已经在本地数据库中
+        var imgUrlTemp = urlTemp.split("/o", 1) + "/assets/img/scan/share.jpg";
+        wx.ready(function () {
+            //分享给微信好友
+            wx.onMenuShareAppMessage({
+                title: titleTemp,
+                desc: descTemp,
+                link: linkTemp,
+                imgUrl: imgUrlTemp,
+                success: function () {
+                    $("#success_share").show();
+                },
+                cancel: function () {
+                    $("#cancel_share").show();
+                }
+            });
+            //分享到朋友圈
+            wx.onMenuShareTimeline({
+                title: titleTemp,
+                link: linkTemp,
+                imgUrl: imgUrlTemp,
+                success: function () {
+                    $("#success_share").show();
+                },
+                cancel: function () {
+                    $("#cancel_share").show();
+                }
+            });
+            //分享到qq空间
+            wx.onMenuShareQZone({
+                title: titleTemp,
+                desc: descTemp,
+                link: linkTemp,
+                imgUrl: imgUrlTemp,
+                success: function () {
+                    $("#success_share").show();
+                },
+                cancel: function () {
+                    $("#cancel_share").show();
+                }
+            });
+            //分享给qq好友
+            wx.onMenuShareQQ({
+                title: titleTemp,
+                desc: descTemp,
+                link: linkTemp,
+                imgUrl: imgUrlTemp,
+                success: function () {
+                    $("#success_share").show();
+                },
+                cancel: function () {
+                    $("#cancel_share").show();
+                }
+            });
+        });
+        wx.error(function () {
+            $("#fail_share").show();
+        });
+    };
+    function goTo(type,name,lng,lat) {
+        var longitude=$("#longitude").val();
+        var latitude=$("#latitude").val();
+        window.location.href="http://apis.map.qq.com/uri/v1/routeplan?type="+type+"&from=我的位置&fromcoord="+latitude+","+longitude+"&to="+name+"&tocoord="+lat+","+lng+"&policy=1&referer=电子导航";
+    }
+    wx.config(${jsConfig});
+    wx.ready(function(){
+        wx.getLocation({
+            type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+            success: function (res) {
+                var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+                var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+                var speed = res.speed; // 速度，以米/每秒计
+                var accuracy = res.accuracy; // 位置精度
+                $("#latitude").val(latitude);
+                $("#longitude").val(longitude);
+            }
+        });
+    });
+</script>
+</body>
+</html>

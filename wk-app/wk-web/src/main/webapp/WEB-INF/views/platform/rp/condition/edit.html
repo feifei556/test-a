@@ -1,0 +1,98 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<header class="header navbar bg-white shadow">
+    <div class="btn-group tool-button">
+        <a class="btn btn-primary navbar-btn" href="${base}/platform/rp/condition" id="goBack" data-pjax><i class="ti-angle-left"></i>返回</a>
+    </div>
+</header>
+
+<div class="content-wrap">
+    <div class="wrapper" style="min-height:500px;">
+        <section class="panel panel-form">
+            <form id="editForm" role="form" class="form-horizontal parsley-form" data-parsley-validate
+                  action="${base}/platform/rp/condition/editDo" method="post">
+                <input name="id" type="hidden" value="${obj.id}">
+                <div class="row mb10">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label for="left_money" class="col-sm-2 control-label">剩余奖金</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="left_money" class="form-control" name="left_money" data-parsley-required="true"
+                                       placeholder="剩余奖金" value="${obj.left_money}" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="scan_num" class="col-sm-2 control-label">扫码次数</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="scan_num" class="form-control" name="scan_num" data-parsley-required="true"
+                                       placeholder="扫码次数" value="${obj.scan_num}" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="jackpot" class="col-sm-2 control-label">奖池</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="jackpot" class="form-control" name="jackpot" data-parsley-required="true"
+                                       placeholder="奖池" value="${obj.jackpot}" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="redpacket_id" class="col-sm-2 control-label">红包id</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="redpacket_id" class="form-control" name="redpacket_id" data-parsley-required="true"
+                                       placeholder="红包id" value="${obj.redpacket_id}" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="qrcode_id" class="col-sm-2 control-label">二维码id</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="qrcode_id" class="form-control" name="qrcode_id" data-parsley-required="true"
+                                       placeholder="二维码id" value="${obj.qrcode_id}" >
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="rule_id" class="col-sm-2 control-label">规则id</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="rule_id" class="form-control" name="rule_id" data-parsley-required="true"
+                                       placeholder="规则id" value="${obj.rule_id}" >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3"></div>
+                <div class="col-lg-6">
+                    <div class="form-group text-center">
+                        <label></label>
+
+                        <div>
+                            <button class="btn btn-primary btn-block btn-lg btn-parsley" data-loading-text="正在提交...">提 交</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </div>
+</div>
+<script language="JavaScript">
+    $(document).ready(function () {
+        $('#editForm').ajaxForm({
+            dataType: 'json',
+            beforeSubmit: function (arr, form, options) {
+                form.find("button:submit").button("loading");
+            },
+            success: function (data, statusText, xhr, form) {
+                if (data.code == 0) {
+                    Toast.success(data.msg);
+                    setTimeout(function () {
+                        $("#goBack").trigger("click");
+                    }, 1000);
+                } else {
+                    Toast.error(data.msg);
+                }
+                form.find("button:submit").button("reset");
+            }
+        });
+    });
+</script>
+<%}%>

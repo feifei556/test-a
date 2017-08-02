@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <!-- 移动端手机号码/邮箱识别 -->
+    <meta content="telephone=no,email=no" name="format-detection">
+    <!-- 微信调试 取消缓存 -->
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <title>移动端页面</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!-- core -->
+    <script src="../../../../assets/plugins/jquery-1.11.1.min.js"></script>
+    <link rel="stylesheet" href="../../../../assets/bootstrap/css/bootstrap.min.css">
+    <script src="../../../../assets/bootstrap/js/bootstrap.js"></script>
+
+    <link href="../../../../assets/css/qwui_base.css" rel="stylesheet">
+    <!-- page -->
+    <link href="../../../../assets/css/qwui_ui.css" rel="stylesheet">
+
+    <script src="../../../../assets/js/flexible.js"></script>
+
+
+
+
+
+
+</head>
+<body>
+
+<!--wrap-->
+<div class="index">
+    <div class="wrap f-pr">
+        <!--title-->
+        <div class="title"></div>
+        <!--QR code-->
+        <div class="QrCode"></div>
+        <!--envelope top-->
+        <div class="EnvelopeTop">
+            <div class="HeadPic">
+
+              <img src="../../../../assets/img/people.png">
+                <div class="name">${obj.nickname!}</div>
+            </div>
+            <p class="text f-tac">恭喜发财   大吉大利</p>
+        </div>
+        <!--EnvelopeCenter-->
+        <div class="EnvelopeCenter"></div>
+        <!--open-->
+        <div class="open">
+            <a href="${base}/o/d/${qrcode_id!}">点击打开</a>
+        </div>
+        <!--EnvelopeBottom-->
+        <div class="EnvelopeBottom"></div>
+    </div>
+</div>
+
+<!--<div style="width:200px;height:300px;margin: 10% auto">-->
+    <!--<form id="ckd" name="form1" action="${base}/dist/devhtml/normal/d/${qrcode_id!}" method="post">-->
+        <!--<img id="close" src="../../../../assets/img/scan/close.jpg" height="388" width="190"   />-->
+    <!--</form>-->
+<!--</div>-->
+
+
+</body>
+</html>

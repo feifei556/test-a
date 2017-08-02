@@ -1,0 +1,107 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<header class="header navbar bg-white shadow">
+    <div class="btn-group tool-button">
+        <a class="btn btn-primary navbar-btn" href="${base}/platform/rp/qrcode" id="goBack" data-pjax><i class="ti-angle-left"></i>${msg['globals.button.back']}</a>
+    </div>
+</header>
+
+<div class="content-wrap">
+    <div class="wrapper" style="min-height:500px;">
+        <section class="panel panel-form">
+            <form id="addForm" role="form" class="form-horizontal parsley-form" data-parsley-validate
+                  action="${base}/platform/rp/qrcode/addDo" method="post">
+                <div class="row mb10">
+                    <div class="col-lg-12">
+                        <div class="form-group">
+                            <label for="rp_qrcode" class="col-sm-2 control-label">二维码号码</label>
+                            <div class="col-sm-8">
+                            <input type="text" id="rp_qrcode" class="form-control" name="rp_qrcode" data-parsley-required="true" placeholder="必须以http://或者https://开头，且必须是个网址^_^！" onblur="CheckUrl()">
+                            <span id="tt"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="No" class="col-sm-2 control-label">生成数量</label>
+                            <div class="col-sm-8">
+
+                                <input type="text" id="No" name="No"  placeholder="必须是正整数!" onblur="CheckNo()">
+                                <span id="tm"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="disabled" class="col-sm-2 control-label">是否启用</label>
+                            <div class="col-sm-8">
+                                <input type="checkbox" id="disabled" name="disabled" class="js-switch-blue" >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3"></div>
+                <div class="col-lg-6">
+                    <div class="form-group text-center">
+                        <label></label>
+
+                        <div>
+                            <button class="btn btn-primary btn-block btn-lg btn-parsley" data-loading-text="正在提交...">提 交</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+<script language="JavaScript">
+    function CheckUrl(){
+        var url=document.getElementById("rp_qrcode").value;
+        var reg=/^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)(([A-Za-z0-9-~]+)\.)+([A-Za-z0-9-~\/])+$/;
+        var tt=document.getElementById("tt");
+        if(!reg.test(url)){
+            tt.innerHTML="这网址不是以http://https://开头，或者不是网址！";
+            tt.style.color="red";
+        }
+        else{
+            tt.innerHTML="";
+        }
+    }
+
+    function CheckNo(){
+        var no=document.getElementById("No").value;
+        var r=/^[0-9]*[1-9][0-9]*$/;
+        var tm=document.getElementById("tm");
+
+        if(isNaN(no)){
+
+            tm.innerHTML="您需要输入大于零的正整数";
+            tm.style.color="red";
+        }
+        else if(!(r.test(no))){
+            tm.innerHTML="您需要输入大于零的整数";
+            tm.style.color="red";
+        }
+        else{
+            tm.innerHTML="";
+        }
+    }
+    $(document).ready(function () {
+        myForm.init();
+        $('#addForm').ajaxForm({
+            dataType: 'json',
+            beforeSubmit: function (arr, form, options) {
+                form.find("button:submit").button("loading");
+            },
+            success: function (data, statusText, xhr, form) {
+                if (data.code == 0) {
+                    Toast.success(data.msg);
+                    form.resetForm();
+                } else {
+                    Toast.error(data.msg);
+                }
+                form.find("button:submit").button("reset");
+            }
+        });
+    });
+</script>
+<%}%>
+
+

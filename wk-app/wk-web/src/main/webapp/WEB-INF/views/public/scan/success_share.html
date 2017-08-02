@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+    <title>扫码得红包</title>
+    <link rel="stylesheet" href="../../../../assets/bootstrap/css/bootstrap.min.css">
+    <script src="../../../../assets/bootstrap/js/bootstrap.js"></script>
+    <script src="../../../../assets/plugins/jquery-1.11.1.min.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+</head>
+<body>
+
+<input type="hidden" id="qrcode_id" value="${qrcode_id!}">
+<div style="width:200px;height:300px;margin: 10% auto">
+    <h1>神马成功</h1>
+    <div id="success_share" hidden><h3>分享成功</h3></div>
+    <div id="cancel_share" hidden><h3>取消分享</h3></div>
+    <div id="fail_share" hidden><h3>分享失败</h3></div>
+
+</div>
+<script>
+    $().ready(function () {
+        //初始化js_sdk
+        initPage();
+    });
+    //加载微信分享的接口
+    function initPage() {
+        alert("当前页面的url：" + location.href.split('#')[0]);
+        var jsonData;
+        var id = $("#qrcode_id").val();
+        $.ajax({
+            type: "POST",
+            url: "${base}/open/scan/share/configs/" + id,
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                //json字符串转换为json对象
+                jsonData = JSON.parse(data);
+            }
+        });
+        //appid 取不出来，区分大小写,jsApiList中的中括号要舍弃
+        wx.config({
+            appId: jsonData.appId,
+            timestamp: jsonData.timestamp,
+            nonceStr: jsonData.nonceStr,
+            signature: jsonData.signature,
+            jsApiList: jsonData.jsApiList
+        });
+
+        var titleTemp = '扫二维码得红包';// 分享标题
+        var descTemp = '关注公众号扫二维码得红包';// 分享描述
+        // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致,且要根据对应的情况改变
+        var linkTemp = 'http://qq_967b5385.ngrok.wendal.cn/o/s/1132b3108a2746468cb2336d189c1579';
+        // 分享图标
+        var imgUrlTemp = 'http://qq_967b5385.ngrok.wendal.cn/upload/image/20170612/udnfq8omsohejqmuhf6q7gjdgp.jpg';
+        wx.ready(function () {
+            //分享给微信好友
+            wx.onMenuShareAppMessage({
+                title: titleTemp,
+                desc: descTemp,
+                link: linkTemp,
+                imgUrl: imgUrlTemp,
+                success: function () {
+                    $("#success_share").show();
+                },
+                cancel: function () {
+                    $("#cancel_share").show();
+                }
+            });
+            //分享到朋友圈
+            wx.onMenuShareTimeline({
+                title: titleTemp,
+                link: linkTemp,
+                imgUrl: imgUrlTemp,
+                success: function () {
+                    $("#success_share").show();
+                },
+                cancel: function () {
+                    $("#cancel_share").show();
+                }
+            });
+            //分享到qq空间
+            wx.onMenuShareQZone({
+                title: titleTemp,
+                desc: descTemp,
+                link: linkTemp,
+                imgUrl: imgUrlTemp,
+                success: function () {
+                    $("#success_share").show();
+                },
+                cancel: function () {
+                    $("#cancel_share").show();
+                }
+            });
+            //分享给qq好友
+            wx.onMenuShareQQ({
+                title: titleTemp,
+                desc: descTemp,
+                link: linkTemp,
+                imgUrl: imgUrlTemp,
+                success: function () {
+                    $("#success_share").show();
+                },
+                cancel: function () {
+                    $("#cancel_share").show();
+                }
+            });
+        });
+        wx.error(function () {
+            $("#fail_share").show();
+        });
+    }
+    //    wx.config(${jsConfig!});
+</script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<div class="modal-body no-p">
+    <div class="row">
+        <div class="col-xs-12">
+            <section class="panel panel-primary no-b">
+                <header class="panel-heading clearfix brtl brtr">
+                    <div class="overflow-hidden">
+                        <a href="javascript:;" class="h4 show no-m pt5">红包详细信息</a>
+                        <small>${obj.id}</small>
+                    </div>
+                </header>
+                <div class="list-group">
+                    <table class="table table-bordered table-striped mg-t datatable">
+                        <tbody>
+                                                        <tr>
+                                <td>红包标题</td><td>${obj.rp_title}</td>
+                            </tr>
+                                                        <tr>
+                                <td>红包总金额</td><td>${obj.total_money/100}元</td>
+                            </tr>
+                                                        <tr>
+                                <td>中奖模式</td><td>${obj.sweepstakes}</td>
+                            </tr>
+                                                        <tr>
+                                 <td <%if(obj.sweepstakes=="随机"){%>hidden<%}%>>每份金额</td><td <%if(obj.sweepstakes=="随机"){%>hidden<%}%>>${obj.each_money/100}元</td>
+                            </tr>
+                                                        <tr>
+                                <td>红包数量</td><td>${obj.count_no}个</td>
+                            </tr>
+                                                        <tr>
+                                 <td <%if(obj.sweepstakes=="固定"){%>hidden<%}%>>红包最小金额</td><td <%if(obj.sweepstakes=="固定"){%>hidden<%}%>>${obj.min_prize_per/100}元</td>
+                            </tr>
+                                                        <tr>
+                                 <td <%if(obj.sweepstakes=="固定"){%>hidden<%}%>>红包最大金额</td><td <%if(obj.sweepstakes=="固定"){%>hidden<%}%>>${obj.max_prize_per/100}元</td>
+                             </tr>
+                                                        <tr>
+                                <td>红包有效期</td><td>${obj.validity}分钟</td>
+                            </tr>
+                                                        <tr>
+                                <td>红包提示</td><td>${obj.rp_notice}</td>
+                            </tr>
+                                                        <tr>
+                                <td>是否启用</td><td id="disabled_val"></td>
+                            </tr>
+                                                    </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary btn-block" data-dismiss="modal">知道了</button>
+</div>
+<script language="JavaScript">
+    $(document).ready(function () {
+        if ("${obj.disabled}" == "false") {
+            $("#disabled_val").text("否");
+        }else{
+            $("#disabled_val").text("是");
+        }
+    });
+</script>

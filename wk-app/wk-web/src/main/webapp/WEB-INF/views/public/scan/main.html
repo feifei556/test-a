@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <!-- 移动端手机号码/邮箱识别 -->
+    <meta content="telephone=no,email=no" name="format-detection">
+    <!-- 微信调试 取消缓存 -->
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <title>移动端页面</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <script src="../../../../assets/plugins/jquery-1.11.1.min.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <!-- core -->
+    <link href="../../../../assets/css/qwui_base.css" rel="stylesheet">
+    <!-- page -->
+    <link href="../../../../assets/css/qwui_ui.css" rel="stylesheet">
+    <script src="../../../../assets/js/flexible.js"></script>
+
+</head>
+<body>
+
+
+<div class="main">
+    <!--wrap-->
+     <div class="wrap f-pr">
+         <!--QrCode-->
+        <div class="QrCode"></div>
+        <!--money-->
+        <div class="money">
+            ${msg}
+        </div>
+        <!--unit-->
+        <div class="unit">
+            元
+        </div>
+        <!--blessing-->
+        <div class="blessing f-tac">
+            <p>恭喜您~~</p>
+
+            <p>成功抢走${msg!}元红包</p>
+            <input  id="qrcode_id" value="${qrcode_id!}" hidden>
+            <input id="wxid" value="${msg3!}" hidden>
+            <a href="${base}/platform/wx/add/index/${msg3!}">查看位置</a>
+        </div>
+         <div style="width:200px;height:300px;margin: 10% auto">
+             <div id="success_share" hidden><h3>分享成功</h3></div>
+             <div id="cancel_share" hidden><h3>取消分享</h3></div>
+             <div id="fail_share" hidden><h3>分享失败</h3></div>
+
+         </div>
+    </div>
+</div>
+<script>
+    $().ready(function () {
+        //初始化js_sdk
+        initPage();
+    });
+   //split拆分得到数组,前面后面分开
+//S.ajax函数的参数有type,url,data(可选),datatype(类型),async异步,success(成功返回什么)
+    //加载微信分享的接口
+    function initPage() {
+        var urlTemp = location.href.split('#')[0];
+        var jsonData;
+        var id = $("#qrcode_id").val();
+        $.ajax({
+            type: "POST",
+            url: "${base}/open/scan/share/configs/" + id,
+            data: {urlTemp: urlTemp},
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                //json字符串转换为json对象
+                jsonData = JSON.parse(data);
+            }
+        });
+        //appid 取不出来，区分大小写,jsApiList中的中括号要舍弃
+        wx.config({
+            appId: jsonData.appId,
+            timestamp: jsonData.timestamp,
+            nonceStr: jsonData.nonceStr,
+            signature: jsonData.signature,
+            jsApiList: jsonData.jsApiList
+        });
+        var titleTemp = '扫二维码得红包';// 分享标题
+        var descTemp = '关注公众号扫二维码得红包';// 分享描述
+        // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致,且要根据对应的情况改变
+        var linkTemp = urlTemp.split("/o", 1) + "/o/s/" + id;
+        // 分享图标 图标已经在本地数据库中
+        var imgUrlTemp = urlTemp.split("/o", 1) + "/assets/img/scan/share.jpg";
+       //desc,成功分享,参数:title,desc,link(链接地址),imgurl(图片地址)
+        wx.ready(function () {
+            //分享给微信好友
+            wx.onMenuShareAppMessage({
+                title: titleTemp,
+                desc: descTemp,
+                link: linkTemp,
+                imgUrl: imgUrlTemp,
+                success: function () {
+                    $("#success_share").show();
+                },
+                cancel: function () {
+                    $("#cancel_share").show();
+                }
+            });
+            //分享到朋友圈
+            wx.onMenuShareTimeline({
+                title: titleTemp,
+                link: linkTemp,
+                imgUrl: imgUrlTemp,
+                success: function () {
+                    $("#success_share").show();
+                },
+                cancel: function () {
+                    $("#cancel_share").show();
+                }
+            });
+            //分享到qq空间
+            wx.onMenuShareQZone({
+                title: titleTemp,
+                desc: descTemp,
+                link: linkTemp,
+                imgUrl: imgUrlTemp,
+                success: function () {
+                    $("#success_share").show();
+                },
+                cancel: function () {
+                    $("#cancel_share").show();
+                }
+            });
+            //分享给qq好友
+            wx.onMenuShareQQ({
+                title: titleTemp,
+                desc: descTemp,
+                link: linkTemp,
+                imgUrl: imgUrlTemp,
+                success: function () {
+                    $("#success_share").show();
+                },
+                cancel: function () {
+                    $("#cancel_share").show();
+                }
+            });
+        });
+        wx.error(function () {
+            $("#fail_share").show();
+        });
+    };
+
+</script>
+</body>
+</html>

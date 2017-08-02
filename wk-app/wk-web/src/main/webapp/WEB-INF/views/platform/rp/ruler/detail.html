@@ -1,0 +1,93 @@
+<div class="modal-body no-p">
+    <div class="row">
+        <div class="col-xs-12">
+            <section class="panel panel-primary no-b">
+                <header class="panel-heading clearfix brtl brtr">
+                    <div class="overflow-hidden">
+                        <a href="javascript:;" class="h4 show no-m pt5">规则</a>
+                        <small style="visibility:hidden;">${obj.id}</small>
+
+                    </div>
+                </header>
+                <div class="list-group">
+                    <table class="table table-bordered table-striped mg-t datatable">
+                        <tbody>
+                                                        <tr>
+                                <td>红包名称</td><td id="rp"></td>
+                            </tr>
+                                                        <tr>
+                                <td>产品名称</td><td id="pr"></td>
+                             </tr>
+                                                        <tr>
+                                <td>中奖概率(%)</td><td>${obj.winning_probability*100}</td>
+                            </tr>
+                                                        <tr>
+                                <td>开始时间</td><td id="start"></td>
+                            </tr>
+                                                        <tr>
+                                <td>结束时间</td><td id="close"></td>
+                            </tr>
+                                                        <tr>
+                                <td>成功页面</td><td>${obj.success_page}</td>
+                            </tr>
+                                                        <tr>
+                                <td>失败页面</td><td>${obj.fail_page}</td>
+                            </tr>
+                                                        <tr>
+                                <td>是否启用</td><td>${obj.disabled}</td>
+                            </tr>
+                                                        <tr>
+                                <td>介绍</td><td>${obj.introduce}</td>
+                            </tr>
+                                                    </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary btn-block" data-dismiss="modal">知道了</button>
+</div>
+<script>
+
+
+// 时间戳转日期类型
+$(document).ready(function(){
+    var date = new Date(parseInt("${obj.start_time}") * 1000).toLocaleString();
+    $("#start").append(date);
+
+    var date2 = new Date(parseInt("${obj.close_time}") * 1000).toLocaleString();
+    $("#close").append(date2);
+
+    //红包名称查询
+    var  id="${obj.redpacket_id}";
+    var  redPacket_title=null;
+    $.ajax({
+        type: "POST",
+        url: "${base}/platform/rp/ruler/selectRppack/" + id,
+        async: false,
+        dataType: "json",
+        success: function (msg) {
+            //alert(msg);
+            redPacket_title = msg.rp_title;
+            $("#rp").append(redPacket_title);
+        }
+    })
+    //产品名称查询
+    var id="${obj.product_id}";
+    var product_name=null;
+    $.ajax({
+        type:"post",
+        url:"${base}/platform/rp/ruler/selectProductName/" + id,
+        async:false,
+        dataType:"json",
+        success:function (msg) {
+            // alert(msg.product_name);
+            product_name=msg.product_name;
+            $("#pr").append(product_name);
+        }
+    })
+})
+</script>
+

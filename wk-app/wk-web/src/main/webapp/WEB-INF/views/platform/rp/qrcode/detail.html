@@ -1,0 +1,39 @@
+<div class="modal-body no-p">
+    <div class="row">
+        <div class="col-xs-12">
+            <section class="panel panel-primary no-b">
+                <header class="panel-heading clearfix brtl brtr">
+                    <div class="overflow-hidden">
+                        <a href="javascript:;" class="h4 show no-m pt5">码库表</a>
+                        <small>${obj.id}</small>
+                    </div>
+                </header>
+                <div class="list-group">
+                    <table class="table table-bordered table-striped mg-t datatable">
+                        <tbody>
+                                                        <tr>
+                                <td>二维码号码</td><td>${obj.rp_qrcode}</td>
+                            </tr>
+                                                        <tr>
+                                <td>是否启用</td><td id="disabled_val">${obj.disabled}</td>
+                            </tr>
+                                                    </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary btn-block" data-dismiss="modal">知道了</button>
+</div>
+<script language="JavaScript">
+    $(document).ready(function () {
+        if ("${obj.disabled}" == "false") {
+            $("#disabled_val").text("否");
+        }else{
+            $("#disabled_val").text("是");
+        }
+    });
+
+</script>

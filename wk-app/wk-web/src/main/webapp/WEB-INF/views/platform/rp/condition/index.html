@@ -1,0 +1,193 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<section class="content-wrap bg-white">
+    <header class="header navbar bg-white shadow">
+    </header>
+    <br>
+    <div class=panel-body style="padding-top: 50px;">
+        <div class="table-responsive no-border">
+            <table class="table table-bordered table-striped mg-t datatable">
+                <thead>
+                    <tr>
+                            <th>红包标题</th>
+                            <th>红包总奖金(元)</th>
+                            <th>剩余奖金(元)</th>
+                            <th>红包剩余数量(个)</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <div class="col-lg-7">
+        <div class="form-group">
+            <label for="jackpot_t" class="col-sm-2 control-label" style="font-size: medium">总奖金:(元)</label>
+            <div class="col-sm-4">
+                <input type="text" id="jackpot_t" class="form-control" name="jackpot" readonly="readonly">
+            </div>
+            <label for="jackpot" class="col-sm-2 control-label" style="font-size: medium">奖池:(元)</label>
+            <div class="col-sm-4">
+                <input type="text" id="jackpot" class="form-control" name="jackpot" readonly="readonly">
+            </div>
+        </div>
+    </div>
+</section>
+<div id="dialogDetail" class="modal fade bs-modal-sm" tabindex="-3" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
+<script language="JavaScript">
+    var datatable;
+    function initDatatable() {
+        console.log($("#jackpot").val());
+        datatable = $('.datatable').DataTable({
+            "dom": '<"toolbar">frtip',
+            "searching":false,
+            "processing": false,
+            "serverSide": true,
+            "select": true,
+            "ordering": true,
+            "language": {
+                "url": "${base}/assets/plugins/datatables/${lang}.json"
+            },
+            "preDrawCallback": function () {
+                sublime.showLoadingbar($(".main-content"));
+            },
+            "drawCallback": function () {
+                sublime.closeLoadingbar($(".main-content"));
+            },
+            "ajax": {
+                "url": "${base}/platform/rp/condition/data",
+                "type": "post",
+                "data": function (d) {
+
+                }
+            },
+            "order": [[0, "desc"]],
+            "columns": [
+                    {"data": "title", "bSortable": true},
+                    {"data": "total_money", "bSortable": true},
+                    {"data": "left_money", "bSortable": true},
+                    {"data": "count_no", "bSortable": true},
+            ],
+            "columnDefs": [
+                {
+                    "render": function (data, type, row){
+                        return data/100;
+                    },
+                    "targets": 1
+                },
+                {
+                    "render": function (data, type, row){
+                          return data/100;
+                    },
+                    "targets": 2
+                }
+//            "columnDefs": [
+//                {
+//                    "render": function (data, type, row) {
+//                        var id = row.redpacket_id;
+//                        var rp_title = null;
+//                        $.ajax({
+//                            type: "POST",
+//                            url: "${base}/platform/rp/condition/selectRedPacket/" + id,
+//                            async: false,
+//                            dataType: "json",
+//                            success: function (msg) {
+//                                rp_title = msg.rp_title
+//                            }
+//                        });
+//                        return rp_title;
+//                    },
+//                    "targets": 0
+//                },
+            ]
+        });
+        datatable.on('click', 'tr', function () {
+            $(this).toggleClass('selected');
+        });
+        $("#searchBtn").on('click', function () {
+            datatable.ajax.reload();
+        });
+    }
+
+    function del(id) {
+        var dialog = $("#dialogDelete");
+        dialog.modal("show");
+        dialog.find("#okDel").unbind("click");
+        dialog.find("#okDel").bind("click", function (event) {
+            var btn = $(this);
+            btn.button("loading");
+            $.post("${base}/platform/rp/condition/delete/" + id, {}, function (data) {
+                if (data.code == 0) {
+                    datatable.ajax.reload(null,false);
+                } else {
+                    Toast.error(data.msg);
+                }
+                btn.button("reset");
+                dialog.modal("hide");
+            }, "json");
+        });
+    }
+    function delCheck() {
+        var chks = datatable.rows('.selected').data();
+        if (chks.length > 0) {
+            var ids = [];
+            $.each(datatable.rows('.selected').data(), function (i, n) {
+                ids.push(n.id);
+            });
+            var dialog = $("#dialogDelete");
+            dialog.modal("show");
+            dialog.find("#okDel").unbind("click");
+            dialog.find("#okDel").bind("click", function (event) {
+                var btn = $(this);
+                btn.button("loading");
+                $.post("${base}/platform/rp/condition/delete", {ids: ids.toString()}, function (data) {
+                    if (data.code == 0) {
+                        datatable.ajax.reload(null,false);
+                    } else {
+                        Toast.error(data.msg);
+                    }
+                    btn.button("reset");
+                    dialog.modal("hide");
+                }, "json");
+            });
+        } else {
+            Toast.warning("请先选择要删除的项！");
+        }
+    }
+    $(function () {
+        initDatatable();
+        $("#dialogDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+    });
+    //奖池和总奖金
+    $(function () {
+        var jackpot = null
+        $.ajax({
+            type: "POST",
+            url: "${base}/platform/rp/condition/queryJackpoet",
+            async: false,
+            dataType:"json",
+            success: function (jackpot) {
+                $("#jackpot").val(jackpot)
+            }
+        });
+    })
+    $(function () {
+        var jackpot_t = null
+        $.ajax({
+            type: "POST",
+            url: "${base}/platform/rp/condition/queryJackpoet_t",
+            async: false,
+            dataType:"json",
+            success: function (jackpot_t) {
+                $("#jackpot_t").val(jackpot_t)
+            }
+        });
+    })
+</script>
+<%}%>

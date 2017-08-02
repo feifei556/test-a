@@ -1,0 +1,263 @@
+<%
+layout("/layouts/platform.html"){
+%>
+<a href="${base}/platform/visitor/log/inter">点击这里</a>
+<h1>我好</h1>
+<form id="form" action="${base}/platform/visitor/log/inter" method="post" >
+<input id="time" name="time">
+<input id="brower"   name="brower"  >
+<input id="ua"   name="ua" >
+<input id="refer"   name="refer"  >
+<input id="os"   name="os" >
+<input id="path"   name="path" >
+    <input  type="submit" value="点击" >
+</form>
+<script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
+<script>
+
+    /**
+     * vlstat 浏览器统计脚本
+     */
+    var time=getTimestamp();
+    function start(){
+        var os=navigator.platform;
+        var ua = navigator.userAgent;
+
+        $("#time").val(time);
+        $("#ua").val(ua);
+        var brower=getBrower();
+        $("#brower").val(brower);
+        var vlstatREFURL = encodeURIComponent(document.referrer);
+        $("#refer").val(vlstatREFURL);
+        $("#os").val(os);
+        var path=getRootPath();
+        $("#path").val(path);
+    }
+    window.onload=start();
+
+
+    function getRootPath() {
+        //获取当前网址，如： http://localhost:9527/zdss-web/login/login.do
+        var curWwwPath = window.document.location.href;
+        //   console.log("当前网址：" + curWwwPath);
+
+        //获取主机地址之后的目录，如：zdss-web/login/login.do
+        var pathName = window.document.location.pathname;
+        //  console.log("当前路径：" + pathName);
+
+        var pos = curWwwPath.indexOf(pathName);
+        //   console.log("路径位置：" + pos);
+
+        //获取主机地址，如： http://localhost:9527
+        var localhostPath = curWwwPath.substring(0, pos);
+        console.log("当前主机地址：" + localhostPath);
+
+        //获取带"/"的项目名，如：/zdss-web
+        var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+        console.log("当前项目名称：" + projectName);
+
+        return pathName;
+    }
+
+
+
+
+
+
+
+   /*
+     * 获取cookieId
+     */
+    function getCookie(c_name) {
+        if (document.cookie.length > 0) {
+            c_start = document.cookie.indexOf(c_name + "=");
+            if (c_start != -1) {
+                c_start = c_start + c_name.length + 1;
+                c_end = document.cookie.indexOf(";", c_start);
+                if (c_end == -1) {
+                    c_end = document.cookie.length;
+                }
+                return unescape(document.cookie.substring(c_start, c_end));
+            }
+        }
+        return "";
+    }
+    /**
+     * 获取当前时间戳
+     */
+    function getTimestamp() {
+        var timestamp = Date.parse(new Date());
+        timestamp=timestamp/1000;
+        return timestamp;
+    }
+    /**
+     * 生成statId
+     */
+    function genStatId() {
+        var cookieId = getTimestamp();
+        cookieId = "vlstat" + "-" + cookieId + "-" + Math.round(Math.random() * 3000000000);
+        return cookieId;
+    }
+    /**
+     * 设置StatId
+     */
+    function setStatId() {
+        var cookieId = genStatId();
+        setCookie(statIdName, cookieId, 365);
+    }
+    /**
+     * 获取StatId
+     */
+    function getStatId() {
+        var statId = getCookie(statIdName);
+        if (statId != null && statId.length > 0) {
+            return statId;
+        } else {
+            setStatId();
+            return getStatId();
+        }
+    }
+    /**
+     * 获取UA
+     */
+    function getUA() {
+        var ua = navigator.userAgent;
+        if (ua.length > 250) {
+            ua = ua.substring(0, 250);
+        }
+        return ua;
+    }
+    /**
+     * 获取浏览器类型
+     */
+    function getBrower() {
+        var ua = getUA();
+        if (ua.indexOf("Maxthon") != -1) {
+            return "Maxthon";
+        } else if (ua.indexOf("MSIE") != -1) {
+            return "MSIE";
+        } else if (ua.indexOf("Firefox") != -1) {
+            return "Firefox";
+        } else if (ua.indexOf("Chrome") != -1) {
+            return "Chrome";
+        } else if (ua.indexOf("Opera") != -1) {
+            return "Opera";
+        } else if (ua.indexOf("Safari") != -1) {
+            return "Safari";
+        } else {
+            return "ot";
+        }
+    }
+    /**
+     * 获取浏览器语言
+     */
+    function getBrowerLanguage() {
+        var lang = navigator.browserLanguage;
+        return lang != null && lang.length > 0 ? lang : "";
+    }
+    /**
+     * 获取操作系统
+     */
+    function getPlatform() {
+        return navigator.platform;
+    }
+    /**
+     * 获取页面title
+     */
+    function getPageTitle() {
+        return document.title;
+    }
+    /**
+     * 创建一个form
+     *
+     * @return
+     */
+    function createSubmitForm() {
+        var frm = document.createElement("form");
+        document.body.appendChild(frm);
+        frm.method = "POST";
+        return frm;
+    }
+    /**
+     * 为form创建一个元素
+     *
+     * @param inputForm
+     * @param elementName
+     * @param elementValue
+     * @return
+     */
+    function createFormElement(frmInput, elementName, elementValue) {
+        var element = document.createElement("input");
+        element.setAttribute("id", elementName);
+        element.setAttribute("name", elementName);
+        element.setAttribute("type", "hidden");
+        element.setAttribute("value", elementValue);
+        frmInput.appendChild(element);
+        return element;
+    }
+    /**
+     * 构造XMLHttpRequest对象
+     *
+     * @return
+     */
+    function createXMLHttpRequest() {
+        if (window.ActiveXObject) {
+            xmlHttp = new ActiveXObject('Microsoft.XMLHTTP');
+        } else if (window.XMLHttpRequest) {
+            xmlHttp = new XMLHttpRequest();
+        }
+    }
+    /**
+     * url指定跳转页,data是要post的数据。func类似于函数指针
+     *
+     * @param url
+     * @param data
+     * @param func
+     * @return
+     */
+    function AjaxPost(url, data, func) {
+        var httpRequest = createHttpRequest();
+        if (httpRequest) {
+            httpRequest.open("POST", url, true);
+            httpRequest.setRequestHeader("content-length", data.length);
+            httpRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            httpRequest.send(data);
+            httpRequest.onreadystatechange = function() {
+                if (httpRequest.readyState == 4) {
+                    try {
+                        if (httpRequest.status == 200) {
+                            if (func) {
+                                // 这里可以调用想要的函数
+                                func(httpRequest.responseText);
+                            }
+                        }
+                    } catch (e) {
+                        alert("Error XMLHttpRequest!");
+                    }
+                }
+            }
+        } else {
+            alert("Error initializing XMLHttpRequest!");
+        }
+    }
+
+
+    function vlstatInitLE() {
+       // var vlstatCookieId = getStatId();
+        var vlstatUA = encodeURIComponent(getUA());
+        var vlstatIPAddress = document.localName;
+
+        var vlstatURL = encodeURIComponent(document.URL);
+        var vlstatOS = getPlatform();
+        var vlstatBrower = getBrower();
+
+
+    }
+
+
+
+
+
+
+</script>
+<%}%>

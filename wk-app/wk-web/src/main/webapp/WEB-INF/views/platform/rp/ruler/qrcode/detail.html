@@ -1,0 +1,42 @@
+
+<div class="modal-body no-p">
+    <div class="row">
+        <div class="col-xs-12">
+            <section class="panel panel-primary no-b">
+                <header class="panel-heading clearfix brtl brtr">
+                    <div class="overflow-hidden">
+                        <a href="javascript:;" class="h4 show no-m pt5">详情</a>
+                    </div>
+                </header>
+                <div class="list-group">
+                    <table class="table table-bordered table-striped mg-t datatable"  style="table-layout:fixed;">
+                        <tr>
+                            <th>红包</th>
+                            <th>二维码</th>
+                            <th>是否有奖</th>
+                        </tr>
+                        <%if(!isEmpty(map)){ for(var o in map){
+                        %>
+                        <tr>
+                            <td><%print(o.rp_title);%></td>
+                            <td style="overflow: scroll;"><%print(o.rp_qrcode);%></td>
+                            <td><%if(o.disabled==true){print("有");}else{print("无");}%></td>
+                        </tr>
+                        <%
+                        } }%>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-primary btn-block" data-dismiss="modal">知道了</button>
+</div>
+<script>
+
+
+
+
+
+</script>

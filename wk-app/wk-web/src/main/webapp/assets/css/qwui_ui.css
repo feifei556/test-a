@@ -1,0 +1,279 @@
+/*
+* @Author: jacobwang
+* @Date:   2016-11-15 16:02:26
+* @Email:  wangwenyu@qwang.com.cn
+* @Last Modified by:   jacobwang
+* @Last Modified time: 2016-12-11 13:15:37
+*/
+/*
+* @Author: jacobwang
+* @Date:   2016-12-11 13:13:33
+* @Email:  wangwenyu@qwang.com.cn
+* @Last Modified by:   jacobwang
+* @Last Modified time: 2016-12-11 13:13:35
+*/
+/*
+* @Author: jacobwang
+* @Date:   2016-11-15 16:02:54
+* @Email:  wangwenyu@qwang.com.cn
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2017-06-21 14:26:40
+*/
+/*
+* @Author: jacobwang
+* @Date:   2016-11-15 16:02:54
+* @Email:  wangwenyu@qwang.com.cn
+ * @Last Modified by: mikey.zhaopeng
+ * @Last Modified time: 2017-06-22 16:38:17
+*/
+.index .wrap {
+  width: 10rem;
+  height: 17.73333rem;
+  margin: 0 auto;
+  background-size: 100% 100%;
+  background-image: url(../img/bg.jpg); }
+  .index .wrap .QrCode {
+    width: 1.22667rem;
+    height: 1.18667rem;
+    background-image: url(../img/qr.jpg);
+    background-size: 100%;
+    position: absolute;
+    left: 35%;
+    top: 4%; }
+  .index .wrap .EnvelopeTop {
+    width: 7.18667rem;
+    height: 6.13333rem;
+    z-index: 1000;
+    background-repeat: no-repeat;
+    background-image: url(../img/envelope-top.png);
+    background-size: 100% 100%;
+    position: absolute;
+    left: 50%;
+    top: 32%;
+    margin-left: -3.57333rem; }
+    .index .wrap .EnvelopeTop .HeadPic {
+      margin: 0 auto;
+      margin-top: 0.8rem;
+      margin-bottom: 0.4rem;
+      text-align: center; }
+      .index .wrap .EnvelopeTop .HeadPic img {
+        width: 1.24rem;
+        height: 1.24rem;
+        border-radius: 50%; }
+      .index .wrap .EnvelopeTop .HeadPic .name {
+        font-size: 0.4rem;
+        color: #F6CA8D; }
+    .index .wrap .EnvelopeTop .text {
+      font-size: 0.48rem;
+      color: #F6CA8D; }
+  .index .wrap .EnvelopeCenter {
+    width: 1.21333rem;
+    height: 0.6rem;
+    z-index: 1000;
+    position: absolute;
+    top: 67%;
+    left: 44%;
+    background: url(../img/envelope-center.png);
+    background-size: 100%; }
+  .index .wrap .open {
+    width: 3.94667rem;
+    height: 1.58667rem;
+    z-index: 200;
+    position: absolute;
+    bottom: 22%;
+    left: 31%; }
+    .index .wrap .open a {
+      text-align: center;
+      text-decoration: none;
+      line-height: 1.58667rem;
+      font-size: 0.48rem;
+      color: #F7D592;
+      display: block; }
+  .index .wrap .EnvelopeBottom {
+    z-index: 100;
+    width: 7.69333rem;
+    height: 10.34667rem;
+    position: absolute;
+    top: 33.5%;
+    left: 12%;
+    background: url(../img/envelope-bot.png);
+    background-size: 100%; }
+
+.main .wrap {
+  width: 10rem;
+  height: 17.73333rem;
+  margin: 0 auto;
+  background: url(../img/main_1.jpg);
+  background-size: 100% 100%; }
+  .main .wrap .QrCode {
+    width: 1.22667rem;
+    height: 1.18667rem;
+    background-image: url(../img/qr.jpg);
+    background-size: 100%;
+    position: absolute;
+    left: 35%;
+    top: 4%; }
+  .main .wrap .money {
+    width: 2.22667rem;
+    height: 1.90667rem;
+    font-size: 2rem;
+    text-align: center;
+    color: #ef6055;
+    font-family: "PingFang ExtraLight";
+    position: absolute;
+    left: 37%;
+    top: 42%; }
+  .main .wrap .unit {
+    border: 0.08rem solid #fff3e4;
+    border-radius: 50%;
+    background-color: #ef6055;
+    text-align: center;
+    font-size: 0.45333rem;
+    width: 0.94667rem;
+    height: 0.94667rem;
+    line-height: 0.78667rem;
+    color: #fff;
+    position: absolute;
+    left: 58.5%;
+    top: 51%; }
+  .main .wrap .blessing {
+    width: 4.26667rem;
+    height: 1.37333rem;
+    color: #fff;
+    font-size: 0.48rem;
+    position: absolute;
+    bottom: 23%;
+    left: 30%; }
+    .main .wrap .blessing p {
+      padding-top: 0.13333rem; }
+
+.fail .wrap {
+  width: 10rem;
+  height: 17.73333rem;
+  margin: 0 auto;
+  background: url(../img/fail.jpg);
+  background-size: 100% 100%; }
+.fail .wrap .QrCode {
+  width: 1.22667rem;
+  height: 1.18667rem;
+  background-image: url(../img/qr.jpg);
+  background-size: 100%;
+  position: absolute;
+  left: 35%;
+  top: 42%; }
+.fail .wrap .money {
+  font-size: 0.2rem;
+  color: #ef6055;
+  position: absolute;
+  left: 20%;
+  top: 42%; }
+.fail .wrap .unit {
+  border: 0.08rem solid #fff3e4;
+  border-radius: 50%;
+  background-color: #ef6055;
+  text-align: center;
+  font-size: 0.45333rem;
+  width: 0.94667rem;
+  height: 0.94667rem;
+  line-height: 0.78667rem;
+  color: #fff;
+  position: absolute;
+  left: 58.5%;
+  top: 51%; }
+.fail .wrap .blessing {
+  width: 4.26667rem;
+  height: 1.37333rem;
+  color:  #F7D592;
+  font-size: 0.48rem;
+  position: absolute;
+  bottom: 23%;
+  left: 30%; }
+.fail .wrap .blessing p {
+  padding-top: 0.13333rem; }
+
+.detail .wrap {
+  width: 10rem;
+  height: 17.2rem;
+  margin: 0 auto; }
+  .detail .wrap .datail_bg {
+    height: 5.8rem;
+    background: url(../img/main_2.jpg) no-repeat;
+    background-size: 100%; }
+    .detail .wrap .datail_bg .HeadPic {
+      padding-top: .8rem;
+      text-align: center; }
+      .detail .wrap .datail_bg .HeadPic img {
+        width: 1.24rem;
+        height: 1.24rem;
+        border-radius: 50%; }
+    .detail .wrap .datail_bg .blessing {
+      width: 1.86667rem;
+      height: 1.13333rem;
+      position: absolute;
+      left: 41%;
+      top: 13%; }
+      .detail .wrap .datail_bg .blessing P {
+        color: black;
+        font-size: 0.4rem;
+        text-align: center; }
+        .detail .wrap .datail_bg .blessing P:last-child {
+          color: #9C9C9C;
+          padding-top: 0.06667rem; }
+    .detail .wrap .datail_bg .money {
+      width: 4.2rem;
+      height: 1.37333rem;
+      text-align: center;
+      position: absolute;
+      left: 31%;
+      top: 20%; }
+      .detail .wrap .datail_bg .money p:first-child {
+        color: black;
+        font-size: 1.06667rem; }
+      .detail .wrap .datail_bg .money p:last-child {
+        color: #0699FE;
+        font-size: 0.34667rem; }
+
+
+
+
+.packeg-list {
+  border-top: 0.26667rem solid #eee; }
+  .packeg-list .comment {
+    float: left;
+    width: 10rem;
+    background: #fff;
+    padding: 0.2rem 0.26667rem; }
+    .packeg-list .comment .people {
+      border-radius: 50%;
+      display: inline-block;
+      width: 0.96rem;
+      height: 0.96rem;
+      line-height: 0;
+      margin-top: 0.06667rem; }
+      .packeg-list .comment .people img {
+        display: block;
+        width: 0.96rem;
+        height: 0.96rem; }
+    .packeg-list .comment .info {
+      height: 0.84rem;
+      margin-left: 0.26667rem;
+      padding-bottom: 1.33333rem;
+      border-bottom: 1px #EEEEEE solid; }
+      .packeg-list .comment .info p:first-child {
+        color: #000;
+        font-size: 0.4rem; }
+      .packeg-list .comment .info P:last-child {
+        color: #cfcfcf;
+        font-size: 0.33333rem; }
+      .packeg-list .comment .info .left {
+        float: left;
+        width: 4.13333rem;
+        height: 1.04rem; }
+      .packeg-list .comment .info .right {
+        width: 4.06667rem;
+        height: 1.04rem;
+        line-height: 1.04rem;
+        text-align: right;
+        float: left;
+        font-size: 0.37333rem;
+        color: #FF524D; }
